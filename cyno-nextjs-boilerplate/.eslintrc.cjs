@@ -471,6 +471,10 @@ const config = {
       },
     ],
     'import/no-duplicates': 'error',
+    'semi': [
+      'error',
+      'never'
+    ],
 
     // Tailwindcss rules
     'tailwindcss/classnames-order': 'error',
