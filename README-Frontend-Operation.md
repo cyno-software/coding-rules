@@ -1,17 +1,20 @@
 <!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
 
 # Table of content
-   * [🏗️ Issue and Pull Request](#-issue-and-pull-request)
-   * [🎨 Working with CSS](#-working-with-css)
-         - [Choosing which unit to use](#choosing-which-unit-to-use)
-         - [Using media breakpoints](#using-media-breakpoints)
-         - [Logical Properties](#logical-properties)
-         - [DO NOT use `!important`](#do-not-use-important)
-   * [ESLint Rules](#eslint-rules)
-   * [Git flow](#git-flow)
-      + [Common rules](#common-rules)
-      + [The Rule to Name Branch](#the-rule-to-name-branch)
-      + [How to create branches and pull requests etc](#how-to-create-branches-and-pull-requests-etc)
+- [Table of content](#table-of-content)
+- [Rules for operations on the Frontend](#rules-for-operations-on-the-frontend)
+  - [🏗️ Issue and Pull Request](#️-issue-and-pull-request)
+  - [🎨 Working with CSS](#-working-with-css)
+    - [TailwindCSS class naming convention](#tailwindcss-class-naming-convention)
+      - [Choosing which unit to use for css](#choosing-which-unit-to-use-for-css)
+      - [Using media breakpoints](#using-media-breakpoints)
+      - [Logical Properties](#logical-properties)
+      - [DO NOT use `!important`](#do-not-use-important)
+  - [ESLint Rules](#eslint-rules)
+  - [Git flow](#git-flow)
+    - [Common rules](#common-rules)
+    - [The Rule to Name Branch](#the-rule-to-name-branch)
+    - [How to create branches and pull requests etc](#how-to-create-branches-and-pull-requests-etc)
 
 <!-- TOC end -->
 
@@ -27,7 +30,10 @@ Ideally, one PR should only close one issue. It's best if you can keep the PR sm
 <!-- TOC --><a name="-working-with-css"></a>
 ## 🎨 Working with CSS
 <!-- TOC --><a name="choosing-which-unit-to-use"></a>
-#### Choosing which unit to use
+### TailwindCSS class naming convention
+Example: <div className="home-banner | container flex justify-center ... | <other-class>"></div>
+
+#### Choosing which unit to use for css
 If you are changing line-height, please use a unitless value. If you are specifying the value of letter-spacing, please use em. Following this, the value will scale properly with the font-size, we don't need to specify them again when the font-size changes.
 
 Other than the values that were stated above, you should use rem for everything.
@@ -47,6 +53,7 @@ We use three breakpoints for our projects:
 * 30rem (480px)
 * 48rem (768px)
 * 60rem (960px)
+* 90rem (1440px)
 
 <!-- TOC --><a name="logical-properties"></a>
 #### Logical Properties
@@ -81,7 +88,7 @@ dev -> feature/customer
 -> feature/customer-add
 -> feature/customer-update
 // After done one task please create PR into feature/customer branch
-// After merged please `git fetch` and checkout from feature/customer and do again for the next task 
+// After merged please `git fetch` and checkout from feature/customer and do again for the next task
 
 // Git graphqh will look like this if done correctly:
 ||
@@ -91,18 +98,18 @@ dev -> feature/customer
 || \\
 ||  ||\\
 ||  || || feature/customer/update
-||  ||// 
+||  ||//
 ||  ||\\
 ||  || || feature/customer/add
-||  ||// 
-|| // 
+||  ||//
+|| //
 ||// feature/customer (Start logic customer)
 ||
 ||
 dev
 ```
 * When create a merge pull request, alway note infomation of issue (ID) and screenshots (if nesscesary) to reduce reviewing time
-Example markdown information for Pull Request: 
+Example markdown information for Pull Request:
 ```markdown
 # Why
 * To close #123
@@ -112,7 +119,7 @@ Example markdown information for Pull Request:
 
 # Screenshots
 * Before: 📷
-* After: 📷 
+* After: 📷
 ```
 * Always delete branch and close the issue after merge Pull Request (If have a new problem, please create a new issue)
 * Always create a new issue and Pull Request for install new package (Please also ask everyone to consider allow to add new package)
