@@ -23,9 +23,11 @@
 
 <!-- TOC --><a name="-issue-and-pull-request"></a>
 ## 🏗️ Issue and Pull Request
-Before doing a task, you should create an issue to describe the problem first. After that, you can link your Pull Request with the respective issue by using supported keywords.
+Before doing a task, you should create an issue to describe the problem first. After that, you can link your Pull Request with the respective issue.
 
 Ideally, one PR should only close one issue. It's best if you can keep the PR small, because it will help the reviewers to review your code, which in turn will help your PR get merged faster. If you're unsure how to proceed, please don't hesitate to ask other members.
+
+> Yêu cầu thêm người reviewers cho các pull request change, bạn có thể merge nếu như reivewer appoved pull request của bạn
 
 <!-- TOC --><a name="-working-with-css"></a>
 ## 🎨 Working with CSS
