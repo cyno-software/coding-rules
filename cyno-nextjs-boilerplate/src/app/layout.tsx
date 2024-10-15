@@ -3,11 +3,13 @@ import "~/styles/globals.css"
 import React from 'react'
 
 import {
-  GeistSans
+  GeistSans,
 } from "geist/font/sans"
 import {
-  type Metadata
+  type Metadata,
 } from "next"
+
+import Providers from '~/app/providers'
 
 export const metadata: Metadata = {
   title: "Cyno Next.js Boilerplate",
@@ -15,8 +17,8 @@ export const metadata: Metadata = {
   icons: [
     {
       rel: "icon",
-      url: "/favicon.ico"
-    }
+      url: "/favicon.ico",
+    },
   ],
 }
 
@@ -24,8 +26,15 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
-      <body>{children}</body>
+    <html
+      lang="en"
+      className={`${GeistSans.variable}`}
+    >
+      <body>
+        <Providers>
+          {children}
+        </Providers>
+      </body>
     </html>
   )
 }

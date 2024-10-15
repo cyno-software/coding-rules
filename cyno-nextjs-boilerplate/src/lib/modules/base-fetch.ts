@@ -1,5 +1,5 @@
 import {
-  type NextApiRequestCookies
+  type NextApiRequestCookies,
 } from 'next/dist/server/api-utils'
 
 interface RequestConfig extends RequestInit {
@@ -18,6 +18,7 @@ class InterceptorFactory<T> {
 
   use(fn: InterceptorFn<T>): number {
     this.handlers.push(fn)
+
     return this.handlers.length - 1
   }
 
@@ -34,6 +35,7 @@ class InterceptorFactory<T> {
       // eslint-disable-next-line no-await-in-loop
       result = await handler(result)
     }
+
     return result
   }
 }
@@ -59,7 +61,7 @@ class BaseFetch {
     if (params) {
       Object.entries(params).forEach(([
         key,
-        value
+        value,
       ]) =>
         fullUrl.searchParams.append(key, value))
     }
@@ -67,7 +69,8 @@ class BaseFetch {
     return fullUrl.toString()
   }
 
-  private async request<T>(url: string, config: RequestConfig = {}): Promise<BaseFetchResponse<T>> {
+  private async request<T>(url: string, config: RequestConfig = {
+  }): Promise<BaseFetchResponse<T>> {
     const {
       params, ...fetchOptions
     } = config
@@ -75,7 +78,7 @@ class BaseFetch {
     // Run request interceptors
     const interceptedConfig = await this.interceptors.request.run({
       ...fetchOptions,
-      params
+      params,
     })
 
     const fullUrl = this.createUrl(url, interceptedConfig.params)
@@ -99,16 +102,18 @@ class BaseFetch {
     }
   }
 
-  public async get<T>(url: string, config: RequestConfig = {}): Promise<T> {
+  public async get<T>(url: string, config: RequestConfig = {
+  }): Promise<T> {
     const response = await this.request<T>(url, {
       ...config,
-      method: 'GET'
+      method: 'GET',
     })
 
     return response.data
   }
 
-  public async post<T>(url: string, data?: unknown, config: RequestConfig = {}): Promise<T> {
+  public async post<T>(url: string, data?: unknown, config: RequestConfig = {
+  }): Promise<T> {
     const response = await this.request<T>(url, {
       ...config,
       method: 'POST',
@@ -122,7 +127,8 @@ class BaseFetch {
     return response.data
   }
 
-  public async put<T>(url: string, data?: unknown, config: RequestConfig = {}): Promise<T> {
+  public async put<T>(url: string, data?: unknown, config: RequestConfig = {
+  }): Promise<T> {
     const response = await this.request<T>(url, {
       ...config,
       method: 'PUT',
@@ -136,10 +142,11 @@ class BaseFetch {
     return response.data
   }
 
-  public async delete<T>(url: string, config: RequestConfig = {}): Promise<T> {
+  public async delete<T>(url: string, config: RequestConfig = {
+  }): Promise<T> {
     const response = await this.request<T>(url, {
       ...config,
-      method: 'DELETE'
+      method: 'DELETE',
     })
 
     return response.data
@@ -147,7 +154,8 @@ class BaseFetch {
 
   public getCookies(): NextApiRequestCookies {
     if (typeof document === 'undefined') {
-      return {}
+      return {
+      }
     }
 
     return document.cookie.split('; ').reduce<NextApiRequestCookies>((prev, current) => {
@@ -159,7 +167,8 @@ class BaseFetch {
       prev[name!] = value.join('=')
 
       return prev
-    }, {})
+    }, {
+    })
   }
 }
 

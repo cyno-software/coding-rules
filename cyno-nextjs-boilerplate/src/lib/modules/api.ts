@@ -1,8 +1,7 @@
 import {
-  env
+  env,
 } from '~/env'
-
-import BaseFetch from './base-fetch'
+import BaseFetch from '~/lib/modules/base-fetch'
 
 export const api = new BaseFetch(env.NEXT_PUBLIC_API_ENDPOINT_URL)
 
