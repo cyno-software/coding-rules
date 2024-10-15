@@ -95,8 +95,7 @@ class BaseFetch {
       // Run response interceptors
       return await this.interceptors.response.run(response) as BaseFetchResponse<T>
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error('There was a problem with the fetch operation:', error)
+      await this.interceptors.response.run(error as BaseFetchResponse<unknown>)
 
       throw error
     }
