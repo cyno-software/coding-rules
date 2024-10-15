@@ -34,22 +34,11 @@ const config = {
     react: {
       version: 'detect',
     },
-    'import/resolver': {
-      node: {
-        extensions: [
-          '.js',
-          '.jsx',
-          '.ts',
-          '.tsx'
-        ],
-      },
-    },
   },
 
   extends: [
     'next',
     'next/core-web-vitals',
-    'plugin:@typescript-eslint/recommended-type-checked',
     'plugin:@typescript-eslint/stylistic-type-checked',
     'eslint:recommended',
     'plugin:tailwindcss/recommended',
@@ -57,7 +46,18 @@ const config = {
 
   plugins: [
     '@typescript-eslint',
-    'tailwindcss'
+    'tailwindcss',
+  ],
+
+  overrides: [
+    {
+      "files": ["src/components/ui/**/*.{js,jsx,ts,tsx}"],
+      "rules": {
+        "react/prop-types": "off",
+        "no-use-before-define": "off",
+        "react/jsx-no-constructed-context-values": "off",
+      },
+    },
   ],
 
   rules: {
@@ -94,10 +94,11 @@ const config = {
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-unnecessary-type-assertion': 'error',
     '@typescript-eslint/prefer-optional-chain': 'error',
-    '@typescript-eslint/prefer-nullish-coalescing': 'error',
+    '@typescript-eslint/prefer-nullish-coalescing': 'off',
+
 
     // React specific rules
-    'react/prop-types': 'error',
+    'react/prop-types': ['error'],
     'react/jsx-key': 'error',
     'react/no-unused-state': 'error',
     'react/jsx-no-duplicate-props': 'error',
@@ -150,42 +151,42 @@ const config = {
       'error',
       {
         maximum: 1,
-        when: 'multiline'
+        when: 'always',
       },
     ],
     'react/jsx-first-prop-new-line': [
       'error',
-      'multiline'
+      'multiline',
     ],
     'react/jsx-closing-bracket-location': [
       'error',
-      'line-aligned'
+      'line-aligned',
     ],
     'react/jsx-closing-tag-location': 'error',
     'react/jsx-indent-props': [
       'error',
-      2
+      2,
     ],
     'react/jsx-one-expression-per-line': [
       'error',
       {
-        allow: 'single-child'
-      }
+        allow: 'single-child',
+      },
     ],
     'react/jsx-equals-spacing': [
       'error',
-      'never'
+      'never',
     ],
     'react/jsx-indent': [
       'error',
-      2
+      2,
     ],
     'react/jsx-curly-spacing': [
       'warn',
       {
         when: 'never',
-        children: true
-      }
+        children: true,
+      },
     ],
     'react/no-unknown-property': 'error',
     'react/no-string-refs': 'error',
@@ -199,17 +200,22 @@ const config = {
       },
     ],
     'react/jsx-child-element-spacing': 'error',
-    'react/no-unstable-nested-components': 'error',
+    'react/no-unstable-nested-components': 'off',
     'react/boolean-prop-naming': [
-      'error',
+      'off',
       {
-        rule: '^(is|has)[A-Z]([A-Za-z0-9]?)+'
+        rule: '^(is|has)[A-Z]([A-Za-z0-9]?)+',
       },
     ],
     'react/default-props-match-prop-types': 'error',
     'react/no-danger-with-children': 'error',
     'react/style-prop-object': 'error',
-    'react/jsx-no-constructed-context-values': 'error',
+    'react/jsx-no-constructed-context-values': 'off',
+    'react-hooks/exhaustive-deps': 'off',
+    'react/destructuring-assignment': [
+      'error',
+      'always',
+    ],
 
     // General JavaScript rules
     'no-console': 'error',
@@ -218,25 +224,25 @@ const config = {
     'no-var': 'error',
     eqeqeq: [
       'error',
-      'always'
+      'always',
     ],
     'no-multiple-empty-lines': [
       'error',
       {
         max: 2,
-        maxEOF: 1
-      }
+        maxEOF: 1,
+      },
     ],
     'arrow-body-style': [
       'error',
-      'as-needed'
+      'as-needed',
     ],
     'no-param-reassign': 'error',
     'no-shadow': 'error',
     'no-nested-ternary': 'error',
     'no-return-await': 'error',
     'max-lines-per-function': [
-      'warn',
+      'off',
       {
         max: 50,
         skipBlankLines: true,
@@ -266,33 +272,27 @@ const config = {
     camelcase: [
       'warn',
       {
-        properties: 'never'
-      }
+        properties: 'never',
+      },
     ],
     'object-curly-newline': [
       'error',
       {
         ImportDeclaration: 'always',
         ExportDeclaration: 'always',
-        ObjectExpression: {
-          multiline: true,
-          minProperties: 1,
-        },
-        ObjectPattern: {
-          multiline: true,
-          minProperties: 1,
-        },
+        ObjectExpression: 'always',
+        ObjectPattern: 'always',
       },
     ],
     'object-property-newline': [
       'error',
       {
-        allowAllPropertiesOnSameLine: false
+        allowAllPropertiesOnSameLine: false,
       },
     ],
     'function-paren-newline': [
       'error',
-      'multiline'
+      'multiline',
     ],
     'no-restricted-syntax': [
       'error',
@@ -346,50 +346,50 @@ const config = {
     ],
     'max-depth': [
       'warn',
-      3
+      3,
     ],
     'max-nested-callbacks': [
       'warn',
-      3
+      3,
     ],
     'max-params': [
       'warn',
-      4
+      4,
     ],
     'array-bracket-newline': [
       'error',
       {
         multiline: true,
-        minItems: 2
-      }
+        minItems: 2,
+      },
     ],
     'array-element-newline': [
       'error',
       {
         multiline: true,
-        minItems: 2
-      }
+        minItems: 2,
+      },
     ],
     'no-trailing-spaces': 'error',
     'eol-last': [
       'error',
-      'always'
+      'always',
     ],
     'padded-blocks': [
       'error',
-      'never'
+      'never',
     ],
     'space-in-parens': [
       'error',
-      'never'
+      'never',
     ],
     'array-bracket-spacing': [
       'error',
-      'never'
+      'never',
     ],
     'object-curly-spacing': [
       'error',
-      'always'
+      'always',
     ],
     'import/no-cycle': 'error',
     'import/no-useless-path-segments': 'error',
@@ -401,14 +401,14 @@ const config = {
       {
         functions: false,
         classes: true,
-        variables: true
+        variables: true,
       },
     ],
     'no-lone-blocks': 'error',
     'no-unneeded-ternary': 'error',
     'indent': [
       'error',
-      2
+      2,
     ],
     complexity: [
       'error',
@@ -422,33 +422,44 @@ const config = {
         treatUndefinedAsUnspecified: true, // false
       },
     ],
+    'semi': [
+      'error',
+      'never',
+    ],
+    'comma-dangle': [
+      'error',
+      'always-multiline',
+    ],
+    'newline-before-return': 'error',
 
     // Import rules
     'import/no-unresolved': 'off',
     'import/newline-after-import': [
       'error',
       {
-        count: 1
-      }
+        count: 1,
+      },
     ],
     'import/max-dependencies': [
       'warn',
       {
-        max: 15
-      }
+        max: 15,
+      },
     ],
+    'import/no-duplicates': 'error',
     'import/order': [
       'error',
       {
-        groups: [
-          'builtin', // Node.js built-in modules
-          'external', // npm-installed packages
-          'internal', // Paths aliased to internal folders
-          'parent', // Imports from parent directories
-          'sibling', // Imports from sibling directories
-          'index', // Index imports
-          'object', // Object imports
-          'type', // Type imports
+        'groups': [
+          'builtin', // Các module built-in của Node.js
+          'external', // Các package npm bên ngoài
+          'internal', // Các import nội bộ
+          'parent', // Import từ thư mục cha (`../`)
+          'sibling', // Import từ cùng thư mục (`./`)
+          'index', // Import từ file index của thư mục hiện tại
+          'object', // Object imports (TypeScript)
+          'type', // Type imports (TypeScript)
+          'unknown', // Bất kỳ import nào không phù hợp với các nhóm trên
         ],
         pathGroups: [
           {
@@ -457,12 +468,51 @@ const config = {
             position: 'before',
           },
           {
-            pattern: '~/**',
+            pattern: 'react-dom/**',
+            group: 'external',
+            position: 'before',
+          },
+          {
+            pattern: 'react/**',
+            group: 'external',
+            position: 'before',
+          },
+          {
+            pattern: 'next/**',
+            group: 'external',
+            position: 'before',
+          },
+          {
+            pattern: '~/components/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '~/hooks/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '~/utils/**',
+            group: 'internal',
+            position: 'before',
+          },
+          {
+            pattern: '~/types/**',
             group: 'internal',
             position: 'after',
           },
+          {
+            pattern: '~/**',
+            group: 'internal',
+          },
         ],
-        pathGroupsExcludedImportTypes: ['react'],
+        pathGroupsExcludedImportTypes: [
+          'react',
+          'react-dom',
+          'react/**',
+          'next/**',
+        ],
         'newlines-between': 'always',
         alphabetize: {
           order: 'asc',
@@ -470,10 +520,21 @@ const config = {
         },
       },
     ],
-    'import/no-duplicates': 'error',
-    'semi': [
+    'no-restricted-imports': [
       'error',
-      'never'
+      {
+        patterns: [
+          {
+            group: [
+              '../*',
+              './*',
+              './**/*',
+              '../**/*',
+            ],
+            message: 'Use absolute imports with the "~" alias instead of relative imports.',
+          },
+        ],
+      },
     ],
 
     // Tailwindcss rules
