@@ -44,7 +44,7 @@ import {
 } from '~/types/employee'
 
 
-export function EmployeeTable() {
+export function EmployeesTable() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const page = Number(searchParams.get('page')) || 1

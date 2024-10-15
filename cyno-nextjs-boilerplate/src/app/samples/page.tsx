@@ -1,14 +1,14 @@
 import React from 'react'
 
 import {
-  EmployeeTable,
-} from '~/components/tables/employee-table'
+  EmployeesTable,
+} from '~/components/tables/employees-table'
 
 
 export default function SampleEmployeesPage(): React.ReactElement {
   return (
     <div className='container mx-auto my-4'>
-      <EmployeeTable />
+      <EmployeesTable />
     </div>
   )
 }
