@@ -36,6 +36,9 @@ import {
 } from "~/components/ui/button"
 
 import {
+  DEFAULT_PAGE_LIMIT,
+} from '~/lib/constants'
+import {
   useEmployees,
 } from '~/lib/hooks/use-employees'
 
@@ -48,11 +51,10 @@ export function EmployeesTable() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const page = Number(searchParams.get('page')) || 1
-  const limit = 10
 
   const {
     employees, isLoading, error, createEmployee, updateEmployee, deleteEmployee, totalPages,
-  } = useEmployees(page, limit)
+  } = useEmployees(page, DEFAULT_PAGE_LIMIT)
 
   const [
     dialogEmployee,
