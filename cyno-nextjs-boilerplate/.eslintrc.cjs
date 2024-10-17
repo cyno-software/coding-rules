@@ -74,7 +74,7 @@ const config = {
   overrides: [
     {
       files: [
-     "*.ts",
+        "*.ts",
         "*.tsx",
         "*.js",
       ],
