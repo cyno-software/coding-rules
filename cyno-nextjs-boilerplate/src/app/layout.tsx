@@ -1,6 +1,6 @@
 import "~/styles/globals.css"
 
-import React from 'react'
+import React from "react"
 
 import {
   GeistSans,
@@ -9,7 +9,7 @@ import {
   type Metadata,
 } from "next"
 
-import Providers from '~/app/providers'
+import Providers from "~/app/providers"
 
 export const metadata: Metadata = {
   title: "Cyno Next.js Boilerplate",
@@ -22,9 +22,7 @@ export const metadata: Metadata = {
   ],
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"

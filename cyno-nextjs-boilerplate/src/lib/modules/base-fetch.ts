@@ -1,17 +1,17 @@
 import {
   type NextApiRequestCookies,
-} from 'next/dist/server/api-utils'
+} from "next/dist/server/api-utils"
 
 interface RequestConfig extends RequestInit {
-  params?: Record<string, string>;
-  baseURL?: string;
+  params?: Record<string, string>
+  baseURL?: string
 }
 
 interface BaseFetchResponse<T = unknown> extends Response {
-  data: T;
+  data: T
 }
 
-type InterceptorFn<T> = (value: T) => T | Promise<T>;
+type InterceptorFn<T> = (value: T) => T | Promise<T>
 
 class InterceptorFactory<T> {
   private handlers: InterceptorFn<T>[] = []
@@ -43,11 +43,11 @@ class InterceptorFactory<T> {
 class BaseFetch {
   private baseURL: string
   public interceptors: {
-    request: InterceptorFactory<RequestConfig>;
-    response: InterceptorFactory<BaseFetchResponse>;
+    request: InterceptorFactory<RequestConfig>
+    response: InterceptorFactory<BaseFetchResponse>
   }
 
-  constructor(baseURL = '') {
+  constructor(baseURL = "") {
     this.baseURL = baseURL
     this.interceptors = {
       request: new InterceptorFactory<RequestConfig>(),
@@ -55,22 +55,30 @@ class BaseFetch {
     }
   }
 
-  private createUrl(url: string, params?: Record<string, string>): string {
-    const fullUrl = new URL(url, this.baseURL)
+  private createUrl(
+    url: string, params?: Record<string, string>
+  ): string {
+    const fullUrl = new URL(
+      url, this.baseURL
+    )
 
     if (params) {
       Object.entries(params).forEach(([
         key,
         value,
       ]) =>
-        fullUrl.searchParams.append(key, value))
+        fullUrl.searchParams.append(
+          key, value
+        ))
     }
 
     return fullUrl.toString()
   }
 
-  private async request<T>(url: string, config: RequestConfig = {
-  }): Promise<BaseFetchResponse<T>> {
+  private async request<T>(
+    url: string, config: RequestConfig = {
+    }
+  ): Promise<BaseFetchResponse<T>> {
     const {
       params, ...fetchOptions
     } = config
@@ -81,10 +89,14 @@ class BaseFetch {
       params,
     })
 
-    const fullUrl = this.createUrl(url, interceptedConfig.params)
+    const fullUrl = this.createUrl(
+      url, interceptedConfig.params
+    )
 
     try {
-      const response: BaseFetchResponse<T> = await fetch(fullUrl, interceptedConfig) as BaseFetchResponse<T>
+      const response: BaseFetchResponse<T> = await fetch(
+        fullUrl, interceptedConfig
+      ) as BaseFetchResponse<T>
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
@@ -94,80 +106,101 @@ class BaseFetch {
 
       // Run response interceptors
       return await this.interceptors.response.run(response) as BaseFetchResponse<T>
-    } catch (error) {
+    }
+    catch (error) {
       await this.interceptors.response.run(error as BaseFetchResponse<unknown>)
 
       throw error
     }
   }
 
-  public async get<T>(url: string, config: RequestConfig = {
-  }): Promise<T> {
-    const response = await this.request<T>(url, {
-      ...config,
-      method: 'GET',
-    })
+  public async get<T>(
+    url: string, config: RequestConfig = {
+    }
+  ): Promise<T> {
+    const response = await this.request<T>(
+      url, {
+        ...config,
+        method: "GET",
+      }
+    )
 
     return response.data
   }
 
-  public async post<T>(url: string, data?: unknown, config: RequestConfig = {
-  }): Promise<T> {
-    const response = await this.request<T>(url, {
-      ...config,
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-        ...config.headers,
-      },
-    })
+  public async post<T>(
+    url: string, data?: unknown, config: RequestConfig = {
+    }
+  ): Promise<T> {
+    const response = await this.request<T>(
+      url, {
+        ...config,
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          ...config.headers,
+        },
+      }
+    )
 
     return response.data
   }
 
-  public async put<T>(url: string, data?: unknown, config: RequestConfig = {
-  }): Promise<T> {
-    const response = await this.request<T>(url, {
-      ...config,
-      method: 'PUT',
-      body: JSON.stringify(data),
-      headers: {
-        'Content-Type': 'application/json',
-        ...config.headers,
-      },
-    })
+  public async put<T>(
+    url: string, data?: unknown, config: RequestConfig = {
+    }
+  ): Promise<T> {
+    const response = await this.request<T>(
+      url, {
+        ...config,
+        method: "PUT",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          ...config.headers,
+        },
+      }
+    )
 
     return response.data
   }
 
-  public async delete<T>(url: string, config: RequestConfig = {
-  }): Promise<T> {
-    const response = await this.request<T>(url, {
-      ...config,
-      method: 'DELETE',
-    })
+  public async delete<T>(
+    url: string, config: RequestConfig = {
+    }
+  ): Promise<T> {
+    const response = await this.request<T>(
+      url, {
+        ...config,
+        method: "DELETE",
+      }
+    )
 
     return response.data
   }
 
   public getCookies(): NextApiRequestCookies {
-    if (typeof document === 'undefined') {
+    if (typeof document === "undefined") {
       return {
       }
     }
 
-    return document.cookie.split('; ').reduce<NextApiRequestCookies>((prev, current) => {
-      const [
-        name,
-        ...value
-      ] = current.split('=')
+    return document.cookie.split("; ").reduce<NextApiRequestCookies>(
+      (
+        prev, current
+      ) => {
+        const [
+          name,
+          ...value
+        ] = current.split("=")
 
-      prev[name!] = value.join('=')
+        prev[name!] = value.join("=")
 
-      return prev
-    }, {
-    })
+        return prev
+      }, {
+      }
+    )
   }
 }
 

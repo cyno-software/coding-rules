@@ -1,23 +1,23 @@
-'use client'
+"use client"
 
 import React, {
   useMemo, useState,
-} from 'react'
+} from "react"
 
 import {
   useRouter, useSearchParams,
-} from 'next/navigation'
+} from "next/navigation"
 
 import {
   type ColumnDef,
-} from '@tanstack/react-table'
+} from "@tanstack/react-table"
 
 import {
   EmployeeDialog,
-} from '~/components/dialogs/employee-dialog'
+} from "~/components/dialogs/employee-dialog"
 import {
   BaseTable,
-} from '~/components/tables/base-table'
+} from "~/components/tables/base-table"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,24 +37,25 @@ import {
 
 import {
   DEFAULT_PAGE_LIMIT,
-} from '~/lib/constants'
+} from "~/lib/constants"
 import {
   useEmployees,
-} from '~/lib/hooks/use-employees'
+} from "~/lib/hooks/use-employees"
 
 import {
   type Employee,
-} from '~/types/employee'
-
+} from "~/types/employee"
 
 export function EmployeesTable() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const page = Number(searchParams.get('page')) || 1
+  const page = Number(searchParams.get("page")) || 1
 
   const {
     employees, isLoading, error, createEmployee, updateEmployee, deleteEmployee, totalPages,
-  } = useEmployees(page, DEFAULT_PAGE_LIMIT)
+  } = useEmployees({
+    page,
+  })
 
   const [
     dialogEmployee,
@@ -69,9 +70,9 @@ export function EmployeesTable() {
     setEmployeeToDelete,
   ] = useState<Employee | null>(null)
 
-  const handleEmployeeSubmit = (employee: Omit<Employee, 'id'> | Employee) => {
+  const handleEmployeeSubmit = (employee: Omit<Employee, "id"> | Employee) => {
     setDialogEmployee(null)
-    if ('id' in employee) {
+    if ("id" in employee) {
       updateEmployee.mutate(employee)
 
       return
@@ -96,59 +97,59 @@ export function EmployeesTable() {
     setEmployeeToDelete(null)
   }
 
-  const columns = useMemo<ColumnDef<Employee>[]>(() => [
-    {
-      accessorKey: 'image',
-      header: 'Avatar',
-      cell: (info) => (
-        <Avatar>
-          <AvatarImage
-            src={info.getValue<Employee['image']>()}
-            alt={info.row.original.name}
-          />
-          <AvatarFallback>{info.row.original.name.charAt(0)}</AvatarFallback>
-        </Avatar>
-      ),
-    },
-    {
-      accessorKey: 'name',
-      header: 'Name',
-      cell: (info) => info.getValue<Employee['name']>(),
-    },
-    {
-      accessorKey: 'age',
-      header: 'Age',
-      cell: (info) => info.getValue<Employee['age']>(),
-    },
-    {
-      accessorKey: 'salary',
-      header: 'Salary',
-      cell: (info) => `$${info.getValue()}`,
-    },
-    {
-      id: 'actions',
-      header: 'Actions',
-      cell: ({
-        row,
-      }) => (
-        <div onClick={(e) => e.stopPropagation()}>
-          <Button
-            variant="outline"
-            className="mr-2"
-            onClick={() => setDialogEmployee(row.original)}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={() => handleDeleteClick(row.original)}
-          >
-            Delete
-          </Button>
-        </div>
-      ),
-    },
-  ], [])
+  const columns = useMemo<ColumnDef<Employee>[]>(
+    () => [
+      {
+        accessorKey: "image",
+        header: "Avatar",
+        cell: info => (
+          <Avatar>
+            <AvatarImage
+              src={info.getValue<Employee["image"]>()}
+              alt={info.row.original.name}
+            />
+            <AvatarFallback>{info.row.original.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+        ),
+      },
+      {
+        accessorKey: "name",
+        header: "Name",
+        cell: info => info.getValue<Employee["name"]>(),
+      },
+      {
+        accessorKey: "age",
+        header: "Age",
+        cell: info => info.getValue<Employee["age"]>(),
+      },
+      {
+        accessorKey: "salary",
+        header: "Salary",
+        cell: info => `$${info.getValue()}`,
+      },
+      {
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => (
+          <div onClick={e => e.stopPropagation()}>
+            <Button
+              variant="outline"
+              className="mr-2"
+              onClick={() => setDialogEmployee(row.original)}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => handleDeleteClick(row.original)}
+            >
+              Delete
+            </Button>
+          </div>
+        ),
+      },
+    ], []
+  )
 
   return (
     <div>
@@ -184,7 +185,7 @@ export function EmployeesTable() {
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the employee
               {employeeToDelete && ` ${employeeToDelete.name}`}
-              {' '}
+              {" "}
               from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>

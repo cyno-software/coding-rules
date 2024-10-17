@@ -28,7 +28,7 @@ const Form = FormProvider
 
 type FormFieldContextValue<
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
 > = {
   name: TName
 }
@@ -38,10 +38,8 @@ const FormFieldContext = React.createContext<FormFieldContextValue>({
 
 function FormField<
   TFieldValues extends FieldValues = FieldValues,
-  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
->({
-  ...props
-}: ControllerProps<TFieldValues, TName>) {
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({ ...props }: ControllerProps<TFieldValues, TName>) {
   return (
     <FormFieldContext.Provider
       value={{
@@ -60,15 +58,15 @@ const useFormField = () => {
     getFieldState, formState,
   } = useFormContext()
 
-  const fieldState = getFieldState(fieldContext.name, formState)
+  const fieldState = getFieldState(
+    fieldContext.name, formState
+  )
 
   if (!fieldContext) {
     throw new Error("useFormField should be used within <FormField>")
   }
 
-  const {
-    id,
-  } = itemContext
+  const { id } = itemContext
 
   return {
     id,
@@ -90,9 +88,11 @@ const FormItemContext = React.createContext<FormItemContextValue>({
 const FormItem = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({
-  className, ...props
-}, ref) => {
+>((
+  {
+    className, ...props
+  }, ref
+) => {
   const id = React.useId()
 
   return (
@@ -103,7 +103,9 @@ const FormItem = React.forwardRef<
     >
       <div
         ref={ref}
-        className={cn("space-y-2", className)}
+        className={cn(
+          "space-y-2", className
+        )}
         {...props}
       />
     </FormItemContext.Provider>
@@ -114,9 +116,11 @@ FormItem.displayName = "FormItem"
 const FormLabel = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>
->(({
-  className, ...props
-}, ref) => {
+>((
+  {
+    className, ...props
+  }, ref
+) => {
   const {
     error, formItemId,
   } = useFormField()
@@ -124,7 +128,9 @@ const FormLabel = React.forwardRef<
   return (
     <Label
       ref={ref}
-      className={cn(error && "text-destructive", className)}
+      className={cn(
+        error && "text-destructive", className
+      )}
       htmlFor={formItemId}
       {...props}
     />
@@ -135,9 +141,9 @@ FormLabel.displayName = "FormLabel"
 const FormControl = React.forwardRef<
   React.ElementRef<typeof Slot>,
   React.ComponentPropsWithoutRef<typeof Slot>
->(({
-  ...props
-}, ref) => {
+>((
+  { ...props }, ref
+) => {
   const {
     error, formItemId, formDescriptionId, formMessageId,
   } = useFormField()
@@ -161,18 +167,20 @@ FormControl.displayName = "FormControl"
 const FormDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
->(({
-  className, ...props
-}, ref) => {
-  const {
-    formDescriptionId,
-  } = useFormField()
+>((
+  {
+    className, ...props
+  }, ref
+) => {
+  const { formDescriptionId } = useFormField()
 
   return (
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn("text-[0.8rem] text-muted-foreground", className)}
+      className={cn(
+        "text-[0.8rem] text-muted-foreground", className
+      )}
       {...props}
     />
   )
@@ -182,9 +190,11 @@ FormDescription.displayName = "FormDescription"
 const FormMessage = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
->(({
-  className, children, ...props
-}, ref) => {
+>((
+  {
+    className, children, ...props
+  }, ref
+) => {
   const {
     error, formMessageId,
   } = useFormField()
@@ -198,7 +208,9 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-[0.8rem] font-medium text-destructive", className)}
+      className={cn(
+        "text-[0.8rem] font-medium text-destructive", className
+      )}
       {...props}
     >
       {body}

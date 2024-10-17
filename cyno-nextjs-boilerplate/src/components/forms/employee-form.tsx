@@ -1,13 +1,13 @@
-'use client'
+"use client"
 
-import React from 'react'
+import React from "react"
 
 import {
   zodResolver,
-} from '@hookform/resolvers/zod'
+} from "@hookform/resolvers/zod"
 import {
   useForm, type SubmitHandler,
-} from 'react-hook-form'
+} from "react-hook-form"
 
 import {
   Button,
@@ -26,12 +26,12 @@ import {
 
 import {
   type Employee, employeeSchema,
-} from '~/types/employee'
+} from "~/types/employee"
 
 interface EmployeeFormProps {
-  onSubmit: (data: Omit<Employee, 'id'> | Employee) => void;
-  initialValues: Employee | null;
-  onCancel: () => void;
+  onSubmit: (data: Omit<Employee, "id"> | Employee) => void
+  initialValues: Employee | null
+  onCancel: () => void
 }
 
 export function EmployeeForm({
@@ -40,10 +40,10 @@ export function EmployeeForm({
   const form = useForm<Employee>({
     resolver: zodResolver(employeeSchema),
     defaultValues: initialValues ?? {
-      name: '',
-      image: '',
+      name: "",
+      image: "",
       age: 18,
-      salary: '',
+      salary: "",
     },
   })
 
@@ -61,9 +61,7 @@ export function EmployeeForm({
         <FormField
           control={form.control}
           name="name"
-          render={({
-            field,
-          }) => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
@@ -79,9 +77,7 @@ export function EmployeeForm({
         <FormField
           control={form.control}
           name="image"
-          render={({
-            field,
-          }) => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Image URL</FormLabel>
               <FormControl>
@@ -97,16 +93,16 @@ export function EmployeeForm({
         <FormField
           control={form.control}
           name="age"
-          render={({
-            field,
-          }) => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Age</FormLabel>
               <FormControl>
                 <Input
                   type="number"
                   {...field}
-                  onChange={e => field.onChange(parseInt(e.target.value, 10))}
+                  onChange={e => field.onChange(parseInt(
+                    e.target.value, 10
+                  ))}
                 />
               </FormControl>
               <FormMessage />
@@ -116,9 +112,7 @@ export function EmployeeForm({
         <FormField
           control={form.control}
           name="salary"
-          render={({
-            field,
-          }) => (
+          render={({ field }) => (
             <FormItem>
               <FormLabel>Salary</FormLabel>
               <FormControl>
@@ -133,7 +127,7 @@ export function EmployeeForm({
         />
         <Button
           type="submit"
-          className='mr-2'
+          className="mr-2"
         >
           Submit
         </Button>

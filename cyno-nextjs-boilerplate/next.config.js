@@ -13,10 +13,10 @@ const config = {
   images: {
     remotePatterns: [
       {
-        hostname: "**"
-      }
+        hostname: "**",
+      },
     ],
-  }
+  },
 }
 
 export default config

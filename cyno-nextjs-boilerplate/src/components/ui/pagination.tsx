@@ -21,7 +21,9 @@ function Pagination({
     <nav
       role="navigation"
       aria-label="pagination"
-      className={cn("mx-auto flex w-full justify-center", className)}
+      className={cn(
+        "mx-auto flex w-full justify-center", className
+      )}
       {...props}
     />
   )
@@ -31,12 +33,16 @@ Pagination.displayName = "Pagination"
 const PaginationContent = React.forwardRef<
   HTMLUListElement,
   React.ComponentProps<"ul">
->(({
-  className, ...props
-}, ref) => (
+>((
+  {
+    className, ...props
+  }, ref
+) => (
   <ul
     ref={ref}
-    className={cn("flex flex-row items-center gap-1", className)}
+    className={cn(
+      "flex flex-row items-center gap-1", className
+    )}
     {...props}
   />
 ))
@@ -45,12 +51,16 @@ PaginationContent.displayName = "PaginationContent"
 const PaginationItem = React.forwardRef<
   HTMLLIElement,
   React.ComponentProps<"li">
->(({
-  className, ...props
-}, ref) => (
+>((
+  {
+    className, ...props
+  }, ref
+) => (
   <li
     ref={ref}
-    className={cn("", className)}
+    className={cn(
+      "", className
+    )}
     {...props}
   />
 ))
@@ -61,7 +71,7 @@ type PaginationLinkProps = {
   isActive?: boolean
   disabled?: boolean
 } & Pick<ButtonProps, "size"> &
-  React.ComponentProps<"a">
+React.ComponentProps<"a">
 
 function PaginationLink({
   className,
@@ -73,7 +83,7 @@ function PaginationLink({
     <a
       aria-current={isActive ? "page" : undefined}
       className={cn(
-        'cursor-pointer',
+        "cursor-pointer",
         props?.disabled && "cursor-not-allowed opacity-50 pointer-events-none",
         buttonVariants({
           variant: isActive ? "outline" : "ghost",
@@ -138,7 +148,9 @@ function PaginationEllipsis({
   return (
     <span
       aria-hidden
-      className={cn("flex h-9 w-9 items-center justify-center", className)}
+      className={cn(
+        "flex h-9 w-9 items-center justify-center", className
+      )}
       {...props}
     >
       <DotsHorizontalIcon className="size-4" />

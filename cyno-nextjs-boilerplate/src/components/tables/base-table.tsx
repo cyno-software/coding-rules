@@ -1,10 +1,10 @@
 import React, {
   type ReactNode,
-} from 'react'
+} from "react"
 
 import {
   useRouter, useSearchParams,
-} from 'next/navigation'
+} from "next/navigation"
 
 import {
   useReactTable,
@@ -12,7 +12,7 @@ import {
   flexRender,
   getPaginationRowModel,
   type ColumnDef,
-} from '@tanstack/react-table'
+} from "@tanstack/react-table"
 
 import {
   Pagination,
@@ -54,7 +54,7 @@ export function BaseTable<T>({
 }: BaseTableProps<T>) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const page = Number(searchParams.get('page')) || 1
+  const page = Number(searchParams.get("page")) || 1
 
   const table = useReactTable({
     data,
@@ -65,7 +65,9 @@ export function BaseTable<T>({
 
   const setPage = (newPage: number) => {
     const params = new URLSearchParams(searchParams)
-    params.set('page', newPage.toString())
+    params.set(
+      "page", newPage.toString()
+    )
     router.push(`?${params.toString()}`)
   }
 
@@ -84,11 +86,11 @@ export function BaseTable<T>({
 
   return (
     <div>
-      <Table className='w-full'>
+      <Table className="w-full">
         <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
+          {table.getHeaderGroups().map(headerGroup => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
+              {headerGroup.headers.map(header => (
                 <TableHead key={header.id}>
                   {flexRender(
                     header.column.columnDef.header,
@@ -100,26 +102,30 @@ export function BaseTable<T>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows.map((row) => (
+          {table.getRowModel().rows.map(row => (
             <TableRow
               key={row.id}
               onClick={() => onRowClick && onRowClick(row.original)}
               className={onRowClick ? "cursor-pointer hover:bg-gray-100" : ""}
             >
-              {row.getVisibleCells().map((cell) => (
+              {row.getVisibleCells().map(cell => (
                 <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  {flexRender(
+                    cell.column.columnDef.cell, cell.getContext()
+                  )}
                 </TableCell>
               ))}
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <Pagination className='mt-4'>
+      <Pagination className="mt-4">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              onClick={() => setPage(Math.max(1, page - 1))}
+              onClick={() => setPage(Math.max(
+                1, page - 1
+              ))}
               disabled={page <= 1}
             />
           </PaginationItem>
@@ -128,7 +134,9 @@ export function BaseTable<T>({
           </PaginationItem>
           <PaginationItem>
             <PaginationNext
-              onClick={() => setPage(totalPages ? Math.min(totalPages, page + 1) : page + 1)}
+              onClick={() => setPage(totalPages ? Math.min(
+                totalPages, page + 1
+              ) : page + 1)}
               disabled={page >= totalPages}
             />
           </PaginationItem>

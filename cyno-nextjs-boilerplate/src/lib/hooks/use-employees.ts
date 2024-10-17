@@ -2,32 +2,41 @@ import {
   useQuery,
   useMutation,
   useQueryClient,
-} from '@tanstack/react-query'
+} from "@tanstack/react-query"
 
 import {
   fetchEmployees,
   createEmployee,
   updateEmployee,
   deleteEmployee,
-} from '~/lib/api/employees'
+} from "~/lib/api/employees"
+import {
+  DEFAULT_PAGE_LIMIT,
+} from "~/lib/constants"
 
-export function useEmployees(page: number, limit: number) {
+export function useEmployees({
+  page = 1, limit = DEFAULT_PAGE_LIMIT,
+}: {
+  page?: number
+  limit?: number
+}) {
   const queryClient = useQueryClient()
 
   const query = useQuery({
     queryKey: [
-      'employees',
+      "employees",
       page,
       limit,
     ],
-    queryFn: () => fetchEmployees(),
+    queryFn: () =>
+      fetchEmployees(),
   })
 
   const createMutation = useMutation({
     mutationFn: createEmployee,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ['employees'],
+        queryKey: ["employees"],
       })
     },
   })
@@ -36,7 +45,7 @@ export function useEmployees(page: number, limit: number) {
     mutationFn: updateEmployee,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ['employees'],
+        queryKey: ["employees"],
       })
     },
   })
@@ -45,7 +54,7 @@ export function useEmployees(page: number, limit: number) {
     mutationFn: deleteEmployee,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ['employees'],
+        queryKey: ["employees"],
       })
     },
   })

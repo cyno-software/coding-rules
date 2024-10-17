@@ -1,10 +1,10 @@
-'use client'
+"use client"
 
-import React from 'react'
+import React from "react"
 
 import {
   EmployeeForm,
-} from '~/components/forms/employee-form'
+} from "~/components/forms/employee-form"
 import {
   Dialog,
   DialogContent,
@@ -14,19 +14,19 @@ import {
 
 import {
   type Employee,
-} from '~/types/employee'
+} from "~/types/employee"
 
 interface EmployeeDialogProps {
-  item: Employee | null;
-  onClose: () => void;
-  onSubmit: (employee: Omit<Employee, 'id'> | Employee) => void;
+  item: Employee | null
+  onClose: () => void
+  onSubmit: (employee: Omit<Employee, "id"> | Employee) => void
 }
 
 export function EmployeeDialog({
   item, onClose, onSubmit,
 }: EmployeeDialogProps) {
   const isOpen = item !== null
-  const isNewEmployee = isOpen && !('id' in item)
+  const isNewEmployee = isOpen && !("id" in item)
 
   return (
     <Dialog
@@ -35,7 +35,7 @@ export function EmployeeDialog({
     >
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{isNewEmployee ? 'Add New Employee' : 'Edit Employee'}</DialogTitle>
+          <DialogTitle>{isNewEmployee ? "Add New Employee" : "Edit Employee"}</DialogTitle>
         </DialogHeader>
         <EmployeeForm
           initialValues={isNewEmployee ? null : item}

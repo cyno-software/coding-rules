@@ -2,7 +2,7 @@ import {
   QueryClient,
   defaultShouldDehydrateQuery,
   isServer,
-} from '@tanstack/react-query'
+} from "@tanstack/react-query"
 
 function makeQueryClient() {
   return new QueryClient({
@@ -11,16 +11,16 @@ function makeQueryClient() {
         staleTime: 60 * 1000,
         retry: false,
         refetchOnWindowFocus: false,
-        refetchOnMount: 'always',
-        refetchOnReconnect: 'always',
+        refetchOnMount: "always",
+        refetchOnReconnect: "always",
         gcTime: 0,
-        notifyOnChangeProps: 'all',
+        notifyOnChangeProps: "all",
       },
       dehydrate: {
         // include pending queries in dehydration
-        shouldDehydrateQuery: (query) =>
-          defaultShouldDehydrateQuery(query) ||
-          query.state.status === 'pending',
+        shouldDehydrateQuery: query =>
+          defaultShouldDehydrateQuery(query)
+          || query.state.status === "pending",
       },
     },
   })
