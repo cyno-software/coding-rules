@@ -254,6 +254,13 @@ const config = {
         message: "Never use switch",
       },
     ],
+    "no-else-return": "error",
+    "callback-return": "error",
+    "no-lonely-if": "error",
+    "no-unneeded-ternary": "error",
+    "no-useless-return": "error",
+    "no-useless-concat": "error",
+    "no-useless-escape": "error",
 
     // Import rules
     "import/no-unresolved": "off",
