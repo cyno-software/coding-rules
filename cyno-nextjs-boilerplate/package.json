@@ -48,7 +48,7 @@
     "@typescript-eslint/parser": "^8.1.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.15",
-    "eslint-plugin-custom-rules": "./ eslint-plugin-custom-rules",
+    "eslint-plugin-custom-rules": "./eslint-plugin-custom-rules",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-import-alias": "^1.2.0",
     "eslint-plugin-tailwindcss": "^3.17.5",
