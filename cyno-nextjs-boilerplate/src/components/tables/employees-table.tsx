@@ -36,9 +36,6 @@ import {
 } from "~/components/ui/button"
 
 import {
-  DEFAULT_PAGE_LIMIT,
-} from "~/lib/constants"
-import {
   useEmployees,
 } from "~/lib/hooks/use-employees"
 
