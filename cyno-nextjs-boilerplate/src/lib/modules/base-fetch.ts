@@ -7,9 +7,7 @@ interface RequestConfig extends RequestInit {
   baseURL?: string
 }
 
-interface BaseFetchResponse<T = unknown> extends Response {
-  data: T
-}
+interface BaseFetchResponse<T = unknown> extends Response { data: T }
 
 type InterceptorFn<T> = (value: T) => T | Promise<T>
 
@@ -24,12 +22,14 @@ class InterceptorFactory<T> {
 
   eject(id: number): void {
     if (this.handlers[id]) {
-      this.handlers[id] = (value: T) => value
+      this.handlers[id] = (value: T) =>
+        value
     }
   }
 
   async run(value: T): Promise<T> {
     let result = value
+
     // eslint-disable-next-line no-restricted-syntax
     for (const handler of this.handlers) {
       // eslint-disable-next-line no-await-in-loop
@@ -42,6 +42,7 @@ class InterceptorFactory<T> {
 
 class BaseFetch {
   private baseURL: string
+
   public interceptors: {
     request: InterceptorFactory<RequestConfig>
     response: InterceptorFactory<BaseFetchResponse>
@@ -55,6 +56,7 @@ class BaseFetch {
     }
   }
 
+  // eslint-disable-next-line custom-rules/encourage-object-params
   private createUrl(
     url: string, params?: Record<string, string>
   ): string {
@@ -99,7 +101,7 @@ class BaseFetch {
       ) as BaseFetchResponse<T>
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        throw await response.json()
       }
 
       response.data = await response.json() as T
@@ -187,6 +189,7 @@ class BaseFetch {
     }
 
     return document.cookie.split("; ").reduce<NextApiRequestCookies>(
+      // eslint-disable-next-line custom-rules/encourage-object-params
       (
         prev, current
       ) => {
