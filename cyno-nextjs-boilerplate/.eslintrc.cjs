@@ -160,10 +160,10 @@ const config = {
     "react/jsx-no-useless-fragment": "error",
     "react/no-children-prop": "error",
     "react/function-component-definition": [
-      "error",
+      "off",
       {
-        namedComponents: ["function-declaration"],
-        unnamedComponents: "arrow-function",
+        namedComponents: "arrow-function",
+        unnamedComponents: "function-expression",
       },
     ],
     "react/jsx-handler-names": [
@@ -183,20 +183,14 @@ const config = {
         ignoreStateless: true,
       },
     ],
-    "react/jsx-one-expression-per-line": [
-      "error",
-      {
-        allow: "single-child",
-      },
-    ],
     "react/no-unknown-property": "error",
     "react/no-string-refs": "error",
     "react/jsx-child-element-spacing": "error",
     "react/no-unstable-nested-components": "off",
     "react/boolean-prop-naming": [
-      "off",
+      "error",
       {
-        rule: "^(is|has)[A-Z]([A-Za-z0-9]?)+",
+        rule: "^(is|has|allow|.*ed)[A-Z]?([A-Za-z0-9]?)+",
       },
     ],
     "react/default-props-match-prop-types": "error",
@@ -209,6 +203,92 @@ const config = {
       "always",
     ],
     "react/no-adjacent-inline-elements": "error",
+    "react/button-has-type": "error",
+    "react/forward-ref-uses-ref": "error",
+    "react/hook-use-state": [
+      "error",
+      {
+        allowDestructuredState: true,
+      },
+    ],
+    "react/jsx-closing-bracket-location": [
+      "error",
+      {
+        selfClosing: "tag-aligned",
+      },
+    ],
+    "react/jsx-closing-tag-location": "error",
+    "react/jsx-curly-spacing": [
+      "error",
+      {
+        when: "never",
+      },
+    ],
+    "react/jsx-curly-newline": [
+      "error",
+      {
+        multiline: "require",
+        singleline: "consistent",
+      },
+    ],
+    "react/jsx-equals-spacing": [
+      "error",
+      "never",
+    ],
+    "react/jsx-first-prop-new-line": [
+      "error",
+      "multiline-multiprop",
+    ],
+    "react/jsx-max-props-per-line": [
+      "error",
+      {
+        maximum: 1,
+      },
+    ],
+    "react/jsx-fragments": [
+      "error",
+      "element",
+    ],
+    "react/jsx-indent-props": [
+      "error",
+      2,
+    ],
+    "react/jsx-indent": [
+      "error",
+      2,
+    ],
+    "react/jsx-max-depth": [
+      "error",
+      {
+        max: 4,
+      },
+    ],
+    "react/jsx-newline": [
+      "error",
+      {
+        prevent: false,
+      },
+    ],
+    "react/jsx-no-leaked-render": "error",
+    "react/jsx-no-literals": "off",
+    "react/jsx-no-undef": "error",
+    "react/jsx-one-expression-per-line": [
+      "error",
+      {
+        allow: "non-jsx",
+      },
+    ],
+    "react/jsx-props-no-multi-spaces": "error",
+    "react/jsx-props-no-spread-multi": "error",
+    "react/jsx-tag-spacing": [
+      "error",
+      {
+        beforeSelfClosing: "always",
+      },
+    ],
+    "react/jsx-wrap-multilines": "error",
+    "react/no-access-state-in-setstate": "error",
+    "react/no-this-in-sfc": "error",
 
     // General JavaScript rules
     "no-console": "error",
