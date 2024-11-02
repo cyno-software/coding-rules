@@ -34,9 +34,9 @@ interface EmployeeFormProps {
   onCancel: () => void
 }
 
-export function EmployeeForm({
+export const EmployeeForm = ({
   onSubmit, initialValues, onCancel,
-}: EmployeeFormProps) {
+}: EmployeeFormProps) => {
   const form = useForm<Employee>({
     resolver: zodResolver(employeeSchema),
     defaultValues: initialValues ?? {
@@ -61,76 +61,99 @@ export function EmployeeForm({
         <FormField
           control={form.control}
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="John Doe"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={
+            ({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+
+                <FormControl>
+                  <Input
+                    placeholder="John Doe"
+                    {...field}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )
+          }
         />
+
         <FormField
           control={form.control}
           name="image"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Image URL</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="https://example.com/avatar.jpg"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={
+            ({ field }) => (
+              <FormItem>
+                <FormLabel>Image URL</FormLabel>
+
+                <FormControl>
+                  <Input
+                    placeholder="https://example.com/avatar.jpg"
+                    {...field}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )
+          }
         />
+
         <FormField
           control={form.control}
           name="age"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Age</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  onChange={e => field.onChange(parseInt(
-                    e.target.value, 10
-                  ))}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={
+            ({ field }) => (
+              <FormItem>
+                <FormLabel>Age</FormLabel>
+
+                <FormControl>
+                  <Input
+                    type="number"
+                    {...field}
+                    onChange={
+                      e => field.onChange(parseInt(
+                        e.target.value, 10
+                      ))
+                    }
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )
+          }
         />
+
         <FormField
           control={form.control}
           name="salary"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Salary</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="50000.00"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          render={
+            ({ field }) => (
+              <FormItem>
+                <FormLabel>Salary</FormLabel>
+
+                <FormControl>
+                  <Input
+                    placeholder="50000.00"
+                    {...field}
+                  />
+                </FormControl>
+
+                <FormMessage />
+              </FormItem>
+            )
+          }
         />
+
         <Button
           type="submit"
           className="mr-2"
         >
           Submit
         </Button>
+
         <Button
           type="button"
           variant="outline"

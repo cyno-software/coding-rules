@@ -26,6 +26,7 @@ export default function SampleEmployeesPage(): React.ReactElement {
             }
           }
         />
+
         <EmployeesTable />
       </div>
     </Suspense>

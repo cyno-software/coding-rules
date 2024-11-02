@@ -22,9 +22,9 @@ interface EmployeeDialogProps {
   onSubmit: (employee: Omit<Employee, "id"> | Employee) => void
 }
 
-export function EmployeeDialog({
+export const EmployeeDialog = ({
   item, onClose, onSubmit,
-}: EmployeeDialogProps) {
+}: EmployeeDialogProps) => {
   const isOpen = item !== null
   const isNewEmployee = isOpen && !("id" in item)
 
@@ -37,6 +37,7 @@ export function EmployeeDialog({
         <DialogHeader>
           <DialogTitle>{isNewEmployee ? "Add New Employee" : "Edit Employee"}</DialogTitle>
         </DialogHeader>
+
         <EmployeeForm
           initialValues={isNewEmployee ? null : item}
           onSubmit={onSubmit}

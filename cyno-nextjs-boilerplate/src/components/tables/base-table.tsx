@@ -88,55 +88,75 @@ export function BaseTable<T>({
     <div>
       <Table className="w-full">
         <TableHeader>
-          {table.getHeaderGroups().map(headerGroup => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map(header => (
-                <TableHead key={header.id}>
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
+          {
+            table.getHeaderGroups().map(headerGroup => (
+              <TableRow key={headerGroup.id}>
+                {
+                  headerGroup.headers.map(header => (
+                    <TableHead key={header.id}>
+                      {
+                        flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )
+                      }
+                    </TableHead>
+                  ))
+                }
+              </TableRow>
+            ))
+          }
         </TableHeader>
+
         <TableBody>
-          {table.getRowModel().rows.map(row => (
-            <TableRow
-              key={row.id}
-              onClick={() => onRowClick && onRowClick(row.original)}
-              className={onRowClick ? "cursor-pointer hover:bg-gray-100" : ""}
-            >
-              {row.getVisibleCells().map(cell => (
-                <TableCell key={cell.id}>
-                  {flexRender(
-                    cell.column.columnDef.cell, cell.getContext()
-                  )}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
+          {
+            table.getRowModel().rows.map(row => (
+              <TableRow
+                key={row.id}
+                onClick={() => onRowClick && onRowClick(row.original)}
+                className={onRowClick ? "cursor-pointer hover:bg-gray-100" : ""}
+              >
+                {
+                  row.getVisibleCells().map(cell => (
+                    <TableCell key={cell.id}>
+                      {
+                        flexRender(
+                          cell.column.columnDef.cell, cell.getContext()
+                        )
+                      }
+                    </TableCell>
+                  ))
+                }
+              </TableRow>
+            ))
+          }
         </TableBody>
       </Table>
+
       <Pagination className="mt-4">
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              onClick={() => setPage(Math.max(
-                1, page - 1
-              ))}
+              onClick={
+                () => setPage(Math.max(
+                  1, page - 1
+                ))
+              }
               disabled={page <= 1}
             />
           </PaginationItem>
+
           <PaginationItem>
             <PaginationLink isActive>{page}</PaginationLink>
           </PaginationItem>
+
           <PaginationItem>
             <PaginationNext
-              onClick={() => setPage(totalPages ? Math.min(
-                totalPages, page + 1
-              ) : page + 1)}
+              onClick={
+                () => setPage(totalPages ? Math.min(
+                  totalPages, page + 1
+                ) : page + 1)
+              }
               disabled={page >= totalPages}
             />
           </PaginationItem>

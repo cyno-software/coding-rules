@@ -43,7 +43,7 @@ import {
   type Employee,
 } from "~/types/employee"
 
-export function EmployeesTable() {
+export const EmployeesTable = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const page = Number(searchParams.get("page")) || 1
@@ -105,6 +105,7 @@ export function EmployeesTable() {
               src={info.getValue<Employee["image"]>()}
               alt={info.row.original.name}
             />
+
             <AvatarFallback>{info.row.original.name.charAt(0)}</AvatarFallback>
           </Avatar>
         ),
@@ -136,6 +137,7 @@ export function EmployeesTable() {
             >
               Edit
             </Button>
+
             <Button
               variant="destructive"
               onClick={() => handleDeleteClick(row.original)}
@@ -151,8 +153,10 @@ export function EmployeesTable() {
   return (
     <div>
       <Button
-        onClick={() => setDialogEmployee({
-        } as Employee)}
+        onClick={
+          () => setDialogEmployee({
+          } as Employee)
+        }
       >
         Add Employee
       </Button>
@@ -179,15 +183,19 @@ export function EmployeesTable() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure you want to delete this employee?</AlertDialogTitle>
+
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the employee
-              {employeeToDelete && ` ${employeeToDelete.name}`}
+              {employeeToDelete ? ` ${employeeToDelete.name}` : null}
+
               {" "}
               from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
+
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
+
             <AlertDialogAction onClick={handleConfirmDelete}>Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

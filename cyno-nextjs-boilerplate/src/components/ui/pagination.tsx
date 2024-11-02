@@ -14,16 +14,18 @@ import {
   cn,
 } from "~/lib/utils"
 
-function Pagination({
+const Pagination = ({
   className, ...props
-}: React.ComponentProps<"nav">) {
+}: React.ComponentProps<"nav">) => {
   return (
     <nav
       role="navigation"
       aria-label="pagination"
-      className={cn(
-        "mx-auto flex w-full justify-center", className
-      )}
+      className={
+        cn(
+          "mx-auto flex w-full justify-center", className
+        )
+      }
       {...props}
     />
   )
@@ -40,9 +42,11 @@ const PaginationContent = React.forwardRef<
 ) => (
   <ul
     ref={ref}
-    className={cn(
-      "flex flex-row items-center gap-1", className
-    )}
+    className={
+      cn(
+        "flex flex-row items-center gap-1", className
+      )
+    }
     {...props}
   />
 ))
@@ -58,9 +62,11 @@ const PaginationItem = React.forwardRef<
 ) => (
   <li
     ref={ref}
-    className={cn(
-      "", className
-    )}
+    className={
+      cn(
+        "", className
+      )
+    }
     {...props}
   />
 ))
@@ -73,87 +79,98 @@ type PaginationLinkProps = {
 } & Pick<ButtonProps, "size"> &
 React.ComponentProps<"a">
 
-function PaginationLink({
+const PaginationLink = ({
   className,
   isActive,
   size = "icon",
   ...props
-}: PaginationLinkProps) {
+}: PaginationLinkProps) => {
   return (
     <a
       aria-current={isActive ? "page" : undefined}
-      className={cn(
-        "cursor-pointer",
-        props?.disabled && "cursor-not-allowed opacity-50 pointer-events-none",
-        buttonVariants({
-          variant: isActive ? "outline" : "ghost",
-          size,
-        }),
-        className
-      )}
+      className={
+        cn(
+          "cursor-pointer",
+          props?.disabled && "cursor-not-allowed opacity-50 pointer-events-none",
+          buttonVariants({
+            variant: isActive ? "outline" : "ghost",
+            size,
+          }),
+          className
+        )
+      }
       {...props}
     />
   )
 }
 PaginationLink.displayName = "PaginationLink"
 
-function PaginationPrevious({
+const PaginationPrevious = ({
   className,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) {
+}: React.ComponentProps<typeof PaginationLink>) => {
   return (
     <PaginationLink
       aria-label="Go to previous page"
       size="default"
-      className={cn(
-        "gap-1 pl-2.5 cursor-pointer",
-        props?.disabled && "cursor-not-allowed opacity-50 pointer-events-none",
-        className
-      )}
+      className={
+        cn(
+          "gap-1 pl-2.5 cursor-pointer",
+          props?.disabled && "cursor-not-allowed opacity-50 pointer-events-none",
+          className
+        )
+      }
       {...props}
     >
       <ChevronLeftIcon className="size-4" />
+
       <span>Previous</span>
     </PaginationLink>
   )
 }
 PaginationPrevious.displayName = "PaginationPrevious"
 
-function PaginationNext({
+const PaginationNext = ({
   className,
   ...props
-}: React.ComponentProps<typeof PaginationLink>) {
+}: React.ComponentProps<typeof PaginationLink>) => {
   return (
     <PaginationLink
       aria-label="Go to next page"
       size="default"
-      className={cn(
-        "gap-1 pr-2.5 cursor-pointer",
-        props?.disabled && "cursor-not-allowed opacity-50 pointer-events-none",
-        className
-      )}
+      className={
+        cn(
+          "gap-1 pr-2.5 cursor-pointer",
+          props?.disabled && "cursor-not-allowed opacity-50 pointer-events-none",
+          className
+        )
+      }
       {...props}
     >
       <span>Next</span>
+
       <ChevronRightIcon className="size-4" />
     </PaginationLink>
   )
 }
 PaginationNext.displayName = "PaginationNext"
 
-function PaginationEllipsis({
+const PaginationEllipsis = ({
   className,
   ...props
-}: React.ComponentProps<"span">) {
+}: React.ComponentProps<"span">) => {
   return (
     <span
       aria-hidden
-      className={cn(
-        "flex h-9 w-9 items-center justify-center", className
-      )}
+      className={
+        cn(
+          "flex h-9 w-9 items-center justify-center", className
+        )
+      }
       {...props}
     >
       <DotsHorizontalIcon className="size-4" />
+
       <span className="sr-only">More pages</span>
     </span>
   )

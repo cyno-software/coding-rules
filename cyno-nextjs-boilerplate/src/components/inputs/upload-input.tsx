@@ -23,7 +23,7 @@ interface UploadInputProps<T> extends Omit<FilePondProps, "onaddfile" | "onremov
   authToken: string
   customLabels?: Partial<typeof defaultLabels>
   maxFiles?: number
-  allowMultiple?: boolean
+  isMultiple?: boolean
   acceptedFileTypes?: string[]
   maxFileSize?: number
   language?: "en" | "vi"
