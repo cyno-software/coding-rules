@@ -257,12 +257,6 @@ const config = {
       "error",
       2,
     ],
-    "react/jsx-max-depth": [
-      "error",
-      {
-        max: 4,
-      },
-    ],
     "react/jsx-newline": [
       "error",
       {
