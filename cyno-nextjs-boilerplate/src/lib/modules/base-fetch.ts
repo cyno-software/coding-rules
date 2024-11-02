@@ -2,12 +2,18 @@ import {
   type NextApiRequestCookies,
 } from "next/dist/server/api-utils"
 
-interface RequestConfig extends RequestInit {
+export interface RequestConfig extends RequestInit {
   params?: Record<string, string>
   baseURL?: string
+  _retry?: boolean
+  url?: string
 }
 
-interface BaseFetchResponse<T = unknown> extends Response { data: T }
+export interface BaseFetchResponse<T = unknown> extends Response {
+  data: T
+  statusCode: number
+  config: RequestConfig
+}
 
 type InterceptorFn<T> = (value: T) => T | Promise<T>
 
@@ -99,20 +105,22 @@ class BaseFetch {
       const response: BaseFetchResponse<T> = await fetch(
         fullUrl, interceptedConfig
       ) as BaseFetchResponse<T>
+      const body = await response.json()
 
-      if (!response.ok) {
-        throw await response.json()
-      }
-
-      response.data = await response.json() as T
+      response.data = body
+      response.statusCode = response.status
+      response.config = interceptedConfig
 
       // Run response interceptors
-      return await this.interceptors.response.run(response) as BaseFetchResponse<T>
+      const responseIntercepted = await this.interceptors.response.run(response)
+
+      if (!responseIntercepted.ok) {
+        throw responseIntercepted
+      }
+      return responseIntercepted as BaseFetchResponse<T>
     }
     catch (error) {
-      await this.interceptors.response.run(error as BaseFetchResponse<unknown>)
-
-      throw error
+      throw error as BaseFetchResponse<T>
     }
   }
 
