@@ -83,7 +83,7 @@ class BaseFetch {
     return fullUrl.toString()
   }
 
-  private async request<T>(
+  public async request<T>(
     url: string, config: RequestConfig = {
     }
   ): Promise<BaseFetchResponse<T>> {
