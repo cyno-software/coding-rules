@@ -344,12 +344,6 @@ const config = {
         count: 1,
       },
     ],
-    "import/max-dependencies": [
-      "warn",
-      {
-        max: 15,
-      },
-    ],
     "import/no-duplicates": "error",
     "import/order": [
       "error",
