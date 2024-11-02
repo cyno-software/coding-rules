@@ -1,9 +1,0 @@
-{
-  "name": "eslint-plugin-custom-rules",
-  "version": "1.0.0",
-  "main": "index.js",
-  "dependencies": {},
-  "peerDependencies": {
-    "eslint": ">=7.0.0"
-  }
-}
