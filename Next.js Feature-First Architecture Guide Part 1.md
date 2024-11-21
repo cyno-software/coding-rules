@@ -1,407 +1,224 @@
-# Next.js Feature-First Architecture Guide
+# Hướng Dẫn Kiến Trúc Feature-First Next.js 14
 
-## Table of Contents
-- [1. Introduction](#1-introduction)
-  - [1.1 What is Feature-First Architecture](#11-what-is-feature-first-architecture)
-  - [1.2 Why Feature-First](#12-why-feature-first)
-  - [1.3 When to Use](#13-when-to-use)
+## Mục Lục
+1. [Cấu Trúc Dự Án](#1-cấu-trúc-dự-án)
+  - [1.1 Cấu Trúc Thư Mục Gốc](#11-cấu-trúc-thư-mục-gốc)
+  - [1.2 Cấu Trúc Feature Module](#12-cấu-trúc-feature-module)
+  - [1.3 Cấu Trúc Shared Resources](#13-cấu-trúc-shared-resources)
 
-- [2. Project Structure](#2-project-structure)
-  - [2.1 Root Directory Structure](#21-root-directory-structure)
-  - [2.2 Feature Module Structure](#22-feature-module-structure)
-  - [2.3 Shared Resources Structure](#23-shared-resources-structure)
-  - [2.4 Type Definitions](#24-type-definitions)
+2. [Quy Ước Đặt Tên](#2-quy-ước-đặt-tên)
+  - [2.1 Quy Tắc Chung](#21-quy-tắc-chung)
+  - [2.2 Ví Dụ Cụ Thể](#22-ví-dụ-cụ-thể)
 
-- [3. Implementation Guide](#3-implementation-guide)
-  - [3.1 Feature Implementation](#31-feature-implementation)
-  - [3.2 Component Structure](#32-component-structure)
-  - [3.3 State Management](#33-state-management)
-  - [3.4 API Integration](#34-api-integration)
-  - [3.5 Routing Implementation](#35-routing-implementation)
+3. [Tổ Chức Features](#3-tổ-chức-features)
+   - [3.1 Tính Năng Xác Thực](#31-tính-năng-xác-thực)
+   - [3.2 Tổ Chức State Management](#32-tổ-chức-state-management)
+      - [3.2.1 Global State](#321-global-state)
+      - [3.2.2 Feature State](#322-feature-state)
+      - [3.2.3 Server State](#323-server-state)
 
-- [4. Best Practices](#4-best-practices)
-  - [4.1 Code Organization](#41-code-organization)
-  - [4.2 Naming Conventions](#42-naming-conventions)
-  - [4.3 Type Safety](#43-type-safety)
-  - [4.4 Performance Optimization](#44-performance-optimization)
-  - [4.5 Error Handling](#45-error-handling)
+4. [Mô Hình Luồng Dữ Liệu](#4-mô-hình-luồng-dữ-liệu)
+  - [4.1 Luồng Xử Lý Dữ Liệu Chuẩn](#41-luồng-xử-lý-dữ-liệu-chuẩn)
+  - [4.2 Xử Lý Mutations](#42-xử-lý-mutations)
 
-- [5. Advanced Patterns](#5-advanced-patterns)
-  - [5.1 Domain Events](#51-domain-events)
-  - [5.2 Advanced State Management](#52-advanced-state-management)
-  - [5.3 Advanced Routing](#53-advanced-routing)
-  - [5.4 Form Management](#54-form-management)
+5. [Triển Khai Chi Tiết](#5-triển-khai-chi-tiết)
+  - [5.1 Data Table Với TanStack Table](#51-data-table-với-tanstack-table)
+  - [5.2 Form Handling Với React Hook Form](#52-form-handling-với-react-hook-form)
 
-- [6. Testing Strategy](#6-testing-strategy)
-  - [6.1 Unit Testing](#61-unit-testing)
-  - [6.2 Integration Testing](#62-integration-testing)
-  - [6.3 E2E Testing](#63-e2e-testing)
+6. [Xử Lý Lỗi và Loading States](#6-xử-lý-lỗi-và-loading-states)
+  - [6.1 Error Handling](#61-error-handling)
+  - [6.2 Loading States](#62-loading-states)
 
-- [7. Development Workflow](#7-development-workflow)
-  - [7.1 Development Setup](#71-development-setup)
-  - [7.2 Build Process](#72-build-process)
-  - [7.3 Deployment Strategy](#73-deployment-strategy)
+7. [Tối Ưu Hiệu Suất](#7-tối-ưu-hiệu-suất)
+  - [7.1 React Query Optimization](#71-react-query-optimization)
+  - [7.2 Component Optimization](#72-component-optimization)
+  - [7.3 Code Splitting và Dynamic Imports](#73-code-splitting-và-dynamic-imports)
 
-- [8. Maintenance and Scaling](#8-maintenance-and-scaling)
-  - [8.1 Code Quality](#81-code-quality)
-  - [8.2 Documentation](#82-documentation)
-  - [8.3 Performance Monitoring](#83-performance-monitoring)
+8. [Testing Strategy](#8-testing-strategy)
+  - [8.1 Unit Testing Components](#81-unit-testing-components)
+  - [8.2 Integration Testing](#82-integration-testing)
+  - [8.3 API Mocking](#83-api-mocking)
 
-## 1. Introduction
+9. [Deployment và Configuration](#9-deployment-và-configuration)
+  - [9.1 Environment Variables](#91-environment-variables)
+  - [9.2 Next.js Config](#92-nextjs-config)
+  - [9.3 CI/CD Workflow](#93-cicd-workflow)
 
-### 1.1 What is Feature-First Architecture
+10. [Best Practices](#10-best-practices)
+   - Code Organization
+   - State Management
+   - Performance
+   - Testing
+   - Error Handling
 
-Feature-First Architecture là một cách tiếp cận tổ chức code trong đó code được nhóm theo các tính năng nghiệp vụ thay vì các loại kỹ thuật. Mỗi feature là một module độc lập, tự chứa tất cả các thành phần cần thiết.
+## 1. Cấu Trúc Dự Án
 
-```
-features/
-├── auth/          # Authentication feature
-├── products/      # Product management
-└── users/         # User management
-```
-
-### 1.2 Why Feature-First
-
-#### Lợi ích chính:
-
-- **Modularity**: Mỗi feature độc lập và có thể maintain riêng
-- **Scalability**: Dễ dàng thêm/xóa features
-- **Team Organization**: Teams có thể làm việc song song
-- **Code Locality**: Related code ở gần nhau
-- **Better Testing**: Dễ dàng test từng feature
-
-#### Developer Experience:
-
-- Structure rõ ràng, dễ hiểu
-- Onboarding dev mới dễ dàng
-- Giảm conflicts khi làm việc nhóm
-- Có thể reuse code hiệu quả
-
-#### Type Safety:
-
-- Type definitions nằm gần code
-- Dễ dàng maintain types
-- Auto-completion tốt hơn
-- Catch errors sớm hơn
-
-### 1.3 When to Use
-
-#### Phù hợp cho:
-
-- Large-scale applications
-- Multiple development teams
-- Complex business domains
-- Long-term maintainability
-
-#### Một vài bất lợi
-
-##### Complexity:
-
-- Setup ban đầu phức tạp
-- Nhiều boilerplate code
-- Learning curve cao hơn
-- Cần thống nhất conventions
-
-##### Overhead:
-
-- Nhiều files và folders
-- Duplicate code có thể xảy ra
-- Bundle size có thể lớn hơn
-- Build time có thể lâu hơn
-
-##### Communication:
-
-- Cần coordination giữa teams
-- Shared resources cần quản lý kỹ
-- Breaking changes ảnh hưởng nhiều
-- Cần documentation tốt
-
-##### Maintenance:
-
-- Cập nhật dependencies phức tạp
-- Cross-feature changes khó khăn
-- Technical debt có thể tích tụ
-- Cần review code kỹ hơn
-
-## 2. Project Structure
-
-### 2.1 Root Directory Structure
-
+### 1.1 Cấu Trúc Thư Mục Gốc
 ```typescript
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── (auth)/            # Auth routes group
-│   │   │   ├── login/
-│   │   │   │   ├── page.tsx
-│   │   │   │   └── loading.tsx
-│   │   │   └── register/
-│   │   │       └── page.tsx
-│   │   │
-│   │   ├── (dashboard)/       # Dashboard routes
-│   │   │   ├── layout.tsx
-│   │   │   ├── page.tsx
-│   │   │   └── loading.tsx
-│   │   │
-│   │   └── api/               # API routes
-│   │       ├── auth/
-│   │       └── [...]/
+src/
+├── app/                     # Next.js App Router
+│   ├── (auth)/             # Nhóm route xác thực
+│   │   ├── login/
+│   │   ├── register/
+│   │   └── forgot-password/
 │   │
-│   ├── features/              # Feature modules
-│   │   ├── auth/
-│   │   ├── users/
-│   │   └── products/
+│   ├── (dashboard)/        # Nhóm route dashboard
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── loading.tsx
 │   │
-│   ├── shared/               # Shared resources
-│   │   ├── components/              # Common UI components
-│   │   ├── hooks/
-│   │   └── utils/
-│   │
-│   └── types/               # Global types
+│   └── api/                # Routes API
+│       ├── auth/
+│       └── users/
 │
-├── public/                  # Static files
+├── features/               # Các module tính năng
+│   ├── auth/
+│   ├── users/
+│   └── products/
 │
-├── tailwind.config.js      # Tailwind configuration
-├── next.config.js          # Next.js configuration
-├── tsconfig.json           # TypeScript configuration
-├── package.json
-└── README.md
+├── shared/                # Tài nguyên dùng chung
+│   ├── components/
+│   ├── hooks/
+│   └── utils/
+│
+├── types/                 # Types toàn cục
+└── lib/                  # Cấu hình thư viện bên ngoài
 ```
 
-### 2.2 Feature Module Structure
-
+### 1.2 Cấu Trúc Feature Module
 ```typescript
-features/                          # Feature modules
-├── auth/                         # Auth feature
-│   ├── api/                     # API integrations
-│   │   ├── auth-api.ts
-│   │   └── endpoints.ts
-│   │
-│   ├── components/                     # Feature UI components
+features/auth/              # Module xác thực
+├── api/                   # Tích hợp API
+│   ├── queries/          # React Query hooks
+│   │   ├── use-auth-user.ts
+│   │   └── use-auth-session.ts
+│   └── mutations/        # Mutation hooks
+│       ├── use-login.ts
+│       └── use-register.ts
+│
+├── components/           # Components UI
+│   ├── forms/           # Form components
 │   │   ├── login-form/
 │   │   │   ├── login-form.tsx
-│   │   │   ├── login-form.test.tsx
 │   │   │   ├── use-login-form.ts
 │   │   │   └── types.ts
 │   │   └── register-form/
-│   │
-│   ├── hooks/                  # Feature hooks
-│   │   ├── use-auth.ts
-│   │   └── use-user.ts
-│   │
-│   ├── stores/                # State management
-│   │   └── auth-store.ts
-│   │
-│   ├── types/                 # Feature types
-│   │   ├── index.ts          # Type exports
-│   │   ├── auth-types.ts     # Domain types
-│   │   ├── api-types.ts      # API types
-│   │   ├── store-types.ts    # Store types
-│   │   └── component-types.ts # UI types
-│   │
-│   ├── utils/                # Feature utilities
-│   │   ├── validation.ts
-│   │   └── format.ts
-│   │
-│   └── constants/            # Feature constants
-│       └── auth-constants.ts
+│   └── shared/          # Components dùng chung trong feature
 │
-└── users/                    # Users feature
-    ├── api/
-    ├── components/
-    ├── hooks/
-    └── types/
+├── hooks/               # Custom hooks
+│   ├── use-auth.ts
+│   └── use-permissions.ts
+│
+├── stores/             # Quản lý state
+│   └── auth-store.ts
+│
+├── utils/              # Tiện ích
+│   ├── token.ts
+│   └── validation.ts
+│
+└── types/              # Định nghĩa types
+    ├── auth.types.ts
+    └── api.types.ts
 ```
 
-### 2.3 Shared Resources Structure
-
+### 1.3 Cấu Trúc Shared Resources
 ```typescript
-shared/                           # Shared resources
-├── components/                   # UI components
-│   └── ui/                      # Shadcn components
-│       ├── button.tsx
-│       ├── form.tsx
-│       ├── input.tsx
-│       └── label.tsx
+shared/
+├── components/
+│   ├── ui/            # Components UI cơ bản
+│   │   ├── button/
+│   │   │   ├── button.tsx
+│   │   │   ├── button.test.tsx
+│   │   │   └── types.ts
+│   │   └── input/
+│   │
+│   ├── layout/       # Components layout
+│   │   ├── header/
+│   │   └── sidebar/
+│   │
+│   └── data/         # Components hiển thị dữ liệu
+│       └── data-table/
 │
-├── layouts/                     # Layout components
-│   ├── header/
-│   │   ├── header.tsx
-│   │   └── types.ts
-│   ├── sidebar/
-│   │   ├── sidebar.tsx
-│   │   └── types.ts
-│   └── footer/
-│       ├── footer.tsx
-│       └── types.ts
+├── hooks/
+│   ├── data/         # Hooks xử lý dữ liệu
+│   │   ├── use-query-wrapper.ts
+│   │   └── use-mutation-wrapper.ts
+│   │
+│   ├── ui/          # Hooks UI
+│   │   ├── use-modal.ts
+│   │   └── use-toast.ts
+│   │
+│   └── form/        # Hooks form
+│       └── use-form.ts
 │
-├── hooks/                       # Common hooks  
-│   ├── use-form.ts
-│   └── use-fetch.ts
-│
-├── lib/                        # External libs & config
-│   ├── api.ts                  # Axios config
-│   └── db.ts                   # DB config
-│
-├── styles/                     # Global styles
-│   └── globals.css
-│
-└── utils/                      # Common utilities
-    ├── format.ts
-    └── validation.ts
+└── utils/
+    ├── api/         # Tiện ích API
+    │   ├── api-client.ts
+    │   └── error-handler.ts
+    │
+    ├── form/        # Tiện ích form
+    │   └── validators.ts
+    │
+    └── date/        # Tiện ích xử lý ngày tháng
+        └── formatters.ts
 ```
 
-### 2.4 Type Definitions
+## 2. Quy Ước Đặt Tên
 
+### 2.1 Quy Tắc Chung
+- Thư mục: kebab-case
+- Files: kebab-case
+- Components: PascalCase
+- Hooks: camelCase (prefix use)
+- Types/Interfaces: PascalCase
+
+### 2.2 Ví Dụ Cụ Thể:
 ```typescript
-// Global types
-types/
-├── next.d.ts      # Next.js types
-└── index.d.ts     # Global declarations
+// Tên thư mục
+features/
+├── user-management/
+├── product-catalog/
+└── order-processing/
 
-// Feature types
-features/auth/types/
-├── auth-types.ts   # Domain types
-├── api-types.ts    # API types
-└── store-types.ts  # Store types
+// Tên file
+components/
+├── user-table.tsx       # Component file
+├── user-table.test.tsx  # Test file
+└── use-user-table.ts    # Hook file
+
+// Trong code
+// Components
+export const UserTable = () => {}
+
+// Hooks
+export const useUserTable = () => {}
+
+// Types
+interface UserTableProps {}
+type UserTableData = {}
+
+// Constants
+const DEFAULT_PAGE_SIZE = 10
+const API_ENDPOINTS = {}
 ```
 
-## 3. Implementation Guide
+## 3. Tổ Chức Features
 
-### 3.1 Feature Implementation
-
-```typescript
-// features/auth/api/auth-api.ts
-export const loginApi = async (credentials: LoginCredentials): Promise<User> => {
-  const response = await api.post('/auth/login', credentials)
-  return response.data
-}
-
-// features/auth/hooks/use-auth.ts
-export const useAuth = () => {
-  const user = useAuthStore(state => state.user)
-  const login = useAuthStore(state => state.login)
-
-  const handleLogin = async (data: LoginCredentials) => {
-    try {
-      await login(data)
-    } catch (error) {
-      handleError(error)
-    }
-  }
-
-  return { user, handleLogin }
-}
-
-// features/auth/stores/auth-store.ts
-export const useAuthStore = create<AuthStore>((set) => ({
-  user: null,
-  login: async (credentials) => {
-    const user = await loginApi(credentials)
-    set({ user })
-  }
-}))
-```
-
-### 3.2 Component Structure
-
-```typescript
-// shared/hooks/use-form.ts
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm as useHookForm } from 'react-hook-form'
-import type { ZodSchema } from 'zod'
-
-interface UseFormProps<T> {
-  schema: ZodSchema
-  defaultValues?: Partial<T>
-  onSubmit: (data: T) => Promise<void>
-}
-
-export const useForm = <T>({
-  schema,
-  defaultValues,
-  onSubmit
-}: UseFormProps<T>) => {
-  const form = useHookForm<T>({
-    resolver: zodResolver(schema),
-    defaultValues
-  })
-
-  const handleSubmit = form.handleSubmit(async (data) => {
-    try {
-      await onSubmit(data)
-      form.reset()
-    } catch (error) {
-      form.setError('root', {
-        message: error.message
-      })
-    }
-  })
-
-  return {
-    form,
-    handleSubmit,
-    isLoading: form.formState.isSubmitting,
-    errors: form.formState.errors
-  }
-}
-
-// Usage in components
-// features/users/components/user-form/user-form.tsx
-import { useForm } from '@/shared/hooks/use-form'
-import { userSchema } from '../../schemas/user-schema'
-import type { UserFormData } from './types'
-
-export const UserForm = () => {
-  const {
-    form,
-    handleSubmit,
-    isLoading,
-    errors
-  } = useForm<UserFormData>({
-    schema: userSchema,
-    onSubmit: async (data) => {
-      await createUser(data)
-    }
-  })
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <Input
-        {...form.register('name')}
-        label="Name"
-        error={errors.name?.message}
-      />
-      <Input
-        {...form.register('email')}
-        label="Email"
-        error={errors.email?.message}
-      />
-      <Button loading={isLoading}>
-        Submit
-      </Button>
-    </form>
-  )
-}
-```
-
-### 3.3 State Management
-
+### 3.1 Tính Năng Xác Thực
 ```typescript
 // features/auth/stores/auth-store.ts
-interface AuthStore {
+interface AuthState {
   user: User | null
   isLoading: boolean
   error: Error | null
-  login: (credentials: LoginCredentials) => Promise<void>
-  logout: () => void
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
+export const useAuthStore = create<AuthState>()((set) => ({
   user: null,
   isLoading: false,
   error: null,
 
-  login: async (credentials) => {
+  login: async (credentials: LoginCredentials) => {
     set({ isLoading: true })
     try {
       const user = await loginApi(credentials)
@@ -417,666 +234,854 @@ export const useAuthStore = create<AuthStore>((set) => ({
     set({ user: null })
   }
 }))
-```
 
-### 3.4 API Integration
+// features/auth/hooks/use-auth.ts
+export const useAuth = () => {
+  const store = useAuthStore()
+  const { data: session } = useSession()
 
-```typescript
-// shared/lib/api.ts
-export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL
-})
-
-api.interceptors.request.use((config) => {
-  const token = getToken()
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+  const handleLogin = async (credentials: LoginCredentials) => {
+    try {
+      await store.login(credentials)
+    } catch (error) {
+      handleError(error)
+    }
   }
-  return config
-})
 
-// features/auth/api/auth-api.ts
-export const authApi = {
-  login: async (credentials: LoginCredentials): Promise<User> => {
-    const response = await api.post('/auth/login', credentials)
-    return response.data
-  },
-
-  register: async (data: RegisterData): Promise<User> => {
-    const response = await api.post('/auth/register', data)
-    return response.data
+  return {
+    user: store.user,
+    isLoading: store.isLoading,
+    handleLogin,
+    handleLogout: store.logout
   }
 }
 ```
 
-### 3.5 Routing Implementation
+### 3.2 Tổ Chức State Management
 
+#### 3.2.1 Global State
 ```typescript
-// app/(auth)/login/page.tsx
-import { Metadata } from 'next'
-import { LoginForm } from '@/features/auth/components/login-form'
+// store/global/index.ts
+export const useGlobalStore = create<GlobalStore>()((set) => ({
+  theme: 'light',
+  language: 'en',
+  setTheme: (theme) => set({ theme }),
+  setLanguage: (language) => set({ language })
+}))
 
-export const metadata: Metadata = {
-  title: 'Login'
+## 4. Mô Hình Luồng Dữ Liệu
+
+### 4.1 Luồng Xử Lý Dữ Liệu Chuẩn
+```typescript
+// 1. API Layer (React Query)
+const useUserData = () => {
+  return useQuery({
+    queryKey: ['users'],
+    queryFn: () => fetchUsers()
+  })
 }
 
-export default function LoginPage() {
+// 2. Store Layer (Zustand)
+const useUserStore = create((set) => ({
+  filters: initialFilters,
+  setFilters: (filters) => set({ filters })
+}))
+
+// 3. Business Logic Layer (Custom Hooks)
+const useUserManagement = () => {
+  const { data, isLoading } = useUserData()
+  const { filters, setFilters } = useUserStore()
+  const { mutate: createUser } = useCreateUserMutation()
+
+  const handleCreateUser = async (userData: UserInput) => {
+    try {
+      await createUser(userData)
+    } catch (error) {
+      handleError(error)
+    }
+  }
+
+  return {
+    users: data,
+    isLoading,
+    filters,
+    setFilters,
+    handleCreateUser
+  }
+}
+
+// 4. UI Layer (Components)
+const UserTable = () => {
+  const {
+    users,
+    isLoading,
+    filters,
+    handleCreateUser
+  } = useUserManagement()
+
   return (
-    <div className="auth-page">
-      <h1>Login</h1>
-      <LoginForm />
+    <div>
+      <TableFilters filters={filters} />
+      <DataTable 
+        data={users} 
+        loading={isLoading} 
+      />
+    </div>
+  )
+}
+```
+
+#### 3.2.2 Feature State
+```typescript
+// features/users/stores/user-store.ts
+interface UserState {
+  filters: UserFilters
+  sorting: SortingState
+  selection: RowSelectionState
+  pagination: PaginationState
+}
+
+export const useUserStore = create<UserState>()((set) => ({
+  filters: initialFilters,
+  sorting: [],
+  selection: {},
+  pagination: {
+    pageIndex: 0,
+    pageSize: 10
+  },
+  
+  setFilters: (filters) => set({ filters }),
+  setSorting: (sorting) => set({ sorting }),
+  setSelection: (selection) => set({ selection }),
+  setPagination: (pagination) => set({ pagination }),
+  
+  reset: () => set({
+    filters: initialFilters,
+    sorting: [],
+    selection: {},
+    pagination: { pageIndex: 0, pageSize: 10 }
+  })
+}))
+```
+
+#### 3.2.3 Server State
+```typescript
+// features/users/api/queries/use-users.ts
+export const useUsers = () => {
+  const filters = useUserStore(state => state.filters)
+  const sorting = useUserStore(state => state.sorting)
+  const pagination = useUserStore(state => state.pagination)
+
+  return useQuery({
+    queryKey: ['users', filters, sorting, pagination],
+    queryFn: () => fetchUsers({ filters, sorting, pagination }),
+    keepPreviousData: true
+  })
+}
+
+// features/users/api/mutations/use-create-user.ts
+export const useCreateUser = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+      toast.success('User created successfully')
+    }
+  })
+}
+```
+
+## 4. Mô Hình Luồng Dữ Liệu
+
+### 4.1 Luồng Xử Lý Dữ Liệu Chuẩn
+```typescript
+// 1. API Layer (React Query)
+const useUserData = () => {
+  return useQuery({
+    queryKey: ['users'],
+    queryFn: () => fetchUsers()
+  })
+}
+
+// 2. Store Layer (Zustand) (Không bắt buộc phải có bước này)
+const useUserStore = create((set) => ({
+  filters: initialFilters,
+  setFilters: (filters) => set({ filters })
+}))
+
+// 3. Business Logic Layer (Custom Hooks)
+const useUserManagement = () => {
+  const { data, isLoading } = useUserData()
+  const { filters, setFilters } = useUserStore()
+  const { mutate: createUser } = useCreateUserMutation()
+
+  const handleCreateUser = async (userData: UserInput) => {
+    try {
+      await createUser(userData)
+    } catch (error) {
+      handleError(error)
+    }
+  }
+
+  return {
+    users: data,
+    isLoading,
+    filters,
+    setFilters,
+    handleCreateUser
+  }
+}
+
+// 4. UI Layer (Components)
+const UserTable = () => {
+  const {
+    users,
+    isLoading,
+    filters,
+    handleCreateUser
+  } = useUserManagement()
+
+  return (
+    <div>
+      <TableFilters filters={filters} />
+      <DataTable 
+        data={users} 
+        loading={isLoading} 
+      />
+    </div>
+  )
+}
+```
+
+### 4.2 Xử Lý Mutations
+```typescript
+// features/users/api/mutations/use-create-user.ts
+export const useCreateUser = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (data: UserInput) => createUserApi(data),
+    onSuccess: () => {
+      // Invalidate và refetch
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+      // Hiển thị thông báo thành công
+      toast.success('Người dùng đã được tạo')
+    },
+    onError: (error) => {
+      // Xử lý lỗi
+      handleError(error)
+      // Hiển thị thông báo lỗi
+      toast.error('Không thể tạo người dùng')
+    }
+  })
+}
+```
+
+## 5. Triển Khai Chi Tiết
+
+### 5.1 Data Table Với TanStack Table
+```typescript
+// features/users/components/user-table/user-table.tsx
+export const UserTable = () => {
+  const {
+    data,
+    isLoading,
+    pageCount,
+    filters,
+    sorting,
+    pagination,
+    onPaginationChange,
+    onSortingChange,
+    onFiltersChange
+  } = useUserTable()
+
+  const table = useReactTable({
+    data,
+    columns,
+    state: {
+      sorting,
+      pagination,
+      columnFilters: filters
+    },
+    onSortingChange,
+    onPaginationChange,
+    onColumnFiltersChange: onFiltersChange,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    pageCount
+  })
+
+  return (
+    <div>
+      <TableToolbar 
+        table={table}
+        filters={filters}
+        onFiltersChange={onFiltersChange}
+      />
+      
+      <DataTable
+        table={table}
+        loading={isLoading}
+      />
+      
+      <TablePagination
+        table={table}
+        pageCount={pageCount}
+      />
     </div>
   )
 }
 
-// middleware.ts
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get('token')
+// features/users/components/user-table/hooks/use-user-table.ts
+export const useUserTable = () => {
+  // State local
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [filters, setFilters] = useState<ColumnFiltersState>([])
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10
+  })
 
-  if (!token && request.nextUrl.pathname.startsWith('/dashboard')) {
-    return NextResponse.redirect(new URL('/login', request.url))
+  // Data fetching
+  const { data, isLoading } = useQuery({
+    queryKey: ['users', sorting, filters, pagination],
+    queryFn: () => fetchUsers({
+      sorting,
+      filters,
+      pagination
+    }),
+    keepPreviousData: true
+  })
+
+  return {
+    data: data?.users ?? [],
+    pageCount: data?.pageCount ?? 0,
+    isLoading,
+    sorting,
+    filters,
+    pagination,
+    onSortingChange: setSorting,
+    onFiltersChange: setFilters,
+    onPaginationChange: setPagination
   }
 }
 ```
 
-## 4. Best Practices
-
-### 4.1 Code Organization
-
-1. Feature Independence:
+### 5.2 Form Handling Với React Hook Form
 ```typescript
-features/
-├── auth/      # Independent feature
-└── users/     # Only depends on shared
-```
+// shared/hooks/use-form.ts
+export const useAppForm = <TFormData extends Record<string, any>>({
+  schema,
+  defaultValues,
+  onSubmit
+}: UseFormProps<TFormData>) => {
+  const form = useForm<TFormData>({
+    resolver: zodResolver(schema),
+    defaultValues
+  })
 
-2. Shared Code:
-```typescript
-shared/
-├── components/       # Truly shared components
-└── utils/    # Reusable utilities
-```
+  const handleSubmit = form.handleSubmit(async (data) => {
+    try {
+      await onSubmit(data)
+      form.reset()
+    } catch (error) {
+      // Xử lý lỗi form
+      if (error instanceof ValidationError) {
+        error.errors.forEach(({ path, message }) => {
+          form.setError(path as any, { message })
+        })
+      } else {
+        form.setError('root', { message: error.message })
+      }
+    }
+  })
 
-3. Type Organization:
-```typescript
-types/
-├── global.d.ts   # Global types
-└── feature/      # Feature-specific types
-```
-
-### 4.2 Naming Conventions
-
-Follow kebab-case for all folders and files:
-
-```
-components/                     # Folder containing UI components
-├── user-profile/       # Component folder
-│   ├── user-profile.tsx
-│   ├── user-profile.test.tsx
-│   └── styles.ts
-└── auth-form/
-    ├── auth-form.tsx
-    └── auth-form.test.tsx
-```
-
-### 4.3 Type Safety
-
-```typescript
-// Strict configuration
-{
-  "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true
+  return {
+    form,
+    handleSubmit,
+    isLoading: form.formState.isSubmitting,
+    errors: form.formState.errors
   }
 }
 
-// Type utilities
-type Nullable<T> = T | null
-type Required<T> = { [P in keyof T]-?: T[P] }
+// features/users/components/user-form/user-form.tsx
+export const UserForm = () => {
+  const {
+    form,
+    handleSubmit,
+    isLoading,
+    errors
+  } = useAppForm({
+    schema: userSchema,
+    defaultValues: {
+      name: '',
+      email: '',
+      role: 'USER'
+    },
+    onSubmit: async (data) => {
+      await createUser(data)
+    }
+  })
 
-// Type guards
-function isUser(value: unknown): value is User {
   return (
-    typeof value === 'object' &&
-    value !== null &&
-    'id' in value &&
-    'email' in value
+    <Form onSubmit={handleSubmit}>
+      <FormField
+        control={form.control}
+        name="name"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Tên</FormLabel>
+            <FormControl>
+              <Input {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      
+      {/* Các field khác */}
+      
+      <Button 
+        type="submit" 
+        loading={isLoading}
+      >
+        Tạo người dùng
+      </Button>
+    </Form>
   )
 }
 ```
 
-### 4.4 Performance Optimization
+## 6. Xử Lý Lỗi và Loading States
 
+### 6.1 Error Handling
 ```typescript
-// Code splitting
-const DynamicComponent = dynamic(() => import('./heavy'))
-
-// Memoization
-const MemoizedComponent = memo(Component)
-
-// Data fetching
-export const revalidate = 3600 // revalidate every hour
-
-// Image optimization
-// next.config.js
-module.exports = {
-  images: {
-    domains: ['assets.example.com'],
-    formats: ['image/avif', 'image/webp']
-  }
-}
-```
-
-### 4.5 Error Handling
-
-```typescript
-// features/shared/errors/api-error.ts
-class ApiError extends Error {
+// shared/utils/error-handling.ts
+export class ApiError extends Error {
   constructor(
     message: string,
     public code: string,
     public status: number
   ) {
     super(message)
+    this.name = 'ApiError'
   }
 }
 
-// features/shared/components/error-boundary/error-boundary.tsx
-export class ErrorBoundary extends React.Component {
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // Log error
-    console.error(error, errorInfo)
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return <ErrorFallback />
-    }
-    return this.props.children
-  }
-}
-
-// API error handling
-try {
-  await api.post('/endpoint')
-} catch (error) {
+export const handleError = (error: unknown) => {
   if (error instanceof ApiError) {
-    // Handle API error
-  } else if (error instanceof NetworkError) {
-    // Handle network error
-  }
-}
-```
-
-## 5. Advanced Patterns
-
-### 5.1 Domain Events
-
-```typescript
-// features/users/events/user-events.ts
-interface UserEvent {
-  type: 'USER_CREATED' | 'USER_UPDATED' | 'USER_DELETED'
-  payload: User
-  metadata: {
-    timestamp: number
-    triggeredBy: string
-  }
-}
-
-// Event emitter setup
-const eventEmitter = new EventEmitter()
-
-// Event publisher
-const publishUserEvent = (event: UserEvent) => {
-  eventEmitter.emit(event.type, event)
-}
-
-// Event subscriber
-eventEmitter.on('USER_CREATED', async (event: UserEvent) => {
-  // Handle user created
-  await sendWelcomeEmail(event.payload)
-  await setupUserDefaults(event.payload)
-})
-```
-
-### 5.2 Advanced State Management
-
-```typescript
-// features/cart/stores/cart-store.ts
-// Computed selectors
-const selectTotalPrice = (state: CartStore) => {
-  return state.items.reduce((sum, item) => {
-    return sum + item.price * item.quantity
-  }, 0)
-}
-
-// Store slices
-interface CartSlice {
-  items: CartItem[]
-  addItem: (item: Product, quantity: number) => void
-  removeItem: (itemId: string) => void
-}
-
-interface UISlice {
-  isCartOpen: boolean
-  toggleCart: () => void
-}
-
-// Combined store with persistence and devtools
-const useStore = create<CartSlice & UISlice>()(
-  devtools(
-    persist(
-      (set) => ({
-        items: [],
-        isCartOpen: false,
-
-        addItem: (item, quantity) =>
-          set((state) => ({
-            items: [...state.items, { ...item, quantity }]
-          })),
-
-        removeItem: (itemId) =>
-          set((state) => ({
-            items: state.items.filter((item) => item.id !== itemId)
-          })),
-
-        toggleCart: () =>
-          set((state) => ({
-            isCartOpen: !state.isCartOpen
-          }))
-      }),
-      {
-        name: 'cart-storage'
-      }
-    )
-  )
-)
-```
-
-### 5.3 Advanced Routing
-
-```typescript
-// middleware.ts
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-
-export function middleware(request: NextRequest) {
-  // Auth check
-  const token = request.cookies.get('token')
-  
-  // Role check
-  const userRole = request.cookies.get('userRole')
-  
-  // Multi-tenant check
-  const tenantId = request.headers.get('x-tenant-id')
-  
-  // Complex routing logic
-  if (request.nextUrl.pathname.startsWith('/admin')) {
-    if (!token) {
-      return NextResponse.redirect(new URL('/login', request.url))
+    switch (error.code) {
+      case 'VALIDATION_ERROR':
+        toast.error('Dữ liệu không hợp lệ')
+        break
+      case 'UNAUTHORIZED':
+        toast.error('Vui lòng đăng nhập lại')
+        // Redirect to login
+        break
+      default:
+        toast.error('Đã có lỗi xảy ra')
     }
-    
-    if (userRole !== 'ADMIN') {
-      return NextResponse.redirect(new URL('/forbidden', request.url))
+  } else {
+    toast.error('Đã có lỗi không xác định')
+  }
+  
+  // Log error
+  logger.error(error)
+}
+```
+
+### 6.2 Loading States
+```typescript
+// shared/components/ui/loading/loading-state.tsx
+interface LoadingStateProps {
+  loading: boolean
+  children: React.ReactNode
+  fallback?: React.ReactNode
+}
+
+export const LoadingState = ({
+  loading,
+  children,
+  fallback = <Spinner />
+}: LoadingStateProps) => {
+  if (loading) return fallback
+  return children
+}
+
+// Usage
+<LoadingState loading={isLoading}>
+  <UserTable data={users} />
+</LoadingState>
+```
+
+## 7. Tối Ưu Hiệu Suất
+
+### 7.1 React Query Optimization
+```typescript
+// lib/react-query/query-client.ts
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Thời gian cache
+      staleTime: 1000 * 60 * 5, // 5 phút
+      // Thời gian giữ data trong cache
+      cacheTime: 1000 * 60 * 30, // 30 phút
+      // Không tự động refetch khi focus window
+      refetchOnWindowFocus: false,
+      // Số lần retry khi gặp lỗi
+      retry: 1,
+      // Sử dụng data cũ khi fetch data mới
+      keepPreviousData: true
     }
   }
-
-  // Tenant routing
-  if (tenantId) {
-    // Modify request or response based on tenant
-    const response = NextResponse.next()
-    response.headers.set('x-tenant-id', tenantId)
-    return response
-  }
-}
-
-export const config = {
-  matcher: ['/admin/:path*', '/dashboard/:path*']
-}
-
-// Route groups
-app/
-├── (marketing)/     # Public routes
-│   ├── page.tsx    # Homepage
-│   ├── about/
-│   └── blog/
-├── (dashboard)/    # Protected routes
-│   ├── layout.tsx
-│   ├── overview/
-│   └── settings/
-└── (admin)/       # Admin routes
-    ├── layout.tsx
-    ├── users/
-    └── settings/
-```
-
-### 5.4 Form Management
-
-```typescript
-// features/users/schemas/user-schema.ts
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-
-// Validation schema
-const userSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
-  confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"]
 })
 
-type UserFormData = z.infer<typeof userSchema>
-
-// features/users/hooks/use-user-form.ts
-const useUserForm = () => {
-  const form = useForm<UserFormData>({
-    resolver: zodResolver(userSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-      confirmPassword: ''
-    }
+// Sử dụng prefetching
+const prefetchUsers = async () => {
+  await queryClient.prefetchQuery({
+    queryKey: ['users'],
+    queryFn: fetchUsers
   })
-
-  const onSubmit = async (data: UserFormData) => {
-    try {
-      await createUser(data)
-      form.reset()
-    } catch (error) {
-      form.setError('root', { message: error.message })
-    }
-  }
-
-  return {
-    form,
-    onSubmit: form.handleSubmit(onSubmit)
-  }
 }
 
-// features/users/components/user-form/user-form.tsx
-const UserForm = () => {
-  const { form, onSubmit } = useUserForm()
-  
+// Sử dụng infinite queries
+const useInfiniteUsers = () => {
+  return useInfiniteQuery({
+    queryKey: ['users'],
+    queryFn: ({ pageParam = 0 }) => fetchUsers({ page: pageParam }),
+    getNextPageParam: (lastPage) => lastPage.nextCursor
+  })
+}
+```
+
+### 7.2 Component Optimization
+```typescript
+// features/users/components/user-list/user-list.tsx
+import { memo } from 'react'
+
+// Tách component nhỏ và sử dụng memo
+const UserRow = memo(({ user }: UserRowProps) => {
   return (
-    <Form {...form}>
-      <form onSubmit={onSubmit}>
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        
-        {/* Other fields */}
-        
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+    <tr>
+      <td>{user.name}</td>
+      <td>{user.email}</td>
+    </tr>
+  )
+})
+
+// Sử dụng virtualization cho danh sách lớn
+import { useVirtualizer } from '@tanstack/react-virtual'
+
+export const UserList = ({ users }: UserListProps) => {
+  const parentRef = useRef<HTMLDivElement>(null)
+
+  const rowVirtualizer = useVirtualizer({
+    count: users.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 50,
+    overscan: 5
+  })
+
+  return (
+    <div ref={parentRef} className="h-screen overflow-auto">
+      <div
+        style={{
+          height: `${rowVirtualizer.getTotalSize()}px`,
+          width: '100%',
+          position: 'relative'
+        }}
+      >
+        {rowVirtualizer.getVirtualItems().map((virtualRow) => (
+          <UserRow
+            key={virtualRow.index}
+            user={users[virtualRow.index]}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: `${virtualRow.size}px`,
+              transform: `translateY(${virtualRow.start}px)`
+            }}
+          />
+        ))}
+      </div>
+    </div>
   )
 }
 ```
 
-## 6. Testing Strategy
-
-### 6.1 Unit Testing
-
+### 7.3 Code Splitting và Dynamic Imports
 ```typescript
-// features/auth/components/login-form/login-form.test.tsx
-describe('LoginForm', () => {
-  it('should render all fields', () => {
-    render(<LoginForm />)
+// Lazy loading components
+const UserAnalytics = dynamic(() => import('./user-analytics'), {
+  loading: () => <LoadingSpinner />,
+  ssr: false
+})
+
+// Route-based code splitting
+// app/(dashboard)/analytics/page.tsx
+export default async function AnalyticsPage() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <UserAnalytics />
+    </Suspense>
+  )
+}
+```
+
+## 8. Testing Strategy
+
+### 8.1 Unit Testing Components
+```typescript
+// features/users/components/user-table/user-table.test.tsx
+import { render, screen, fireEvent } from '@testing-library/react'
+import { UserTable } from './user-table'
+
+describe('UserTable', () => {
+  const mockUsers = [
+    { id: 1, name: 'User 1', email: 'user1@example.com' },
+    { id: 2, name: 'User 2', email: 'user2@example.com' }
+  ]
+
+  it('hiển thị danh sách người dùng', () => {
+    render(<UserTable users={mockUsers} />)
     
-    expect(screen.getByLabelText('Email')).toBeInTheDocument()
-    expect(screen.getByLabelText('Password')).toBeInTheDocument()
+    expect(screen.getByText('User 1')).toBeInTheDocument()
+    expect(screen.getByText('User 2')).toBeInTheDocument()
   })
 
-  it('should handle submit', async () => {
-    const onSubmit = jest.fn()
-    render(<LoginForm onSubmit={onSubmit} />)
+  it('xử lý phân trang', () => {
+    const onPageChange = jest.fn()
+    render(
+      <UserTable 
+        users={mockUsers}
+        onPageChange={onPageChange}
+      />
+    )
+    
+    fireEvent.click(screen.getByText('Next'))
+    expect(onPageChange).toHaveBeenCalled()
+  })
+})
+```
 
-    await userEvent.type(screen.getByLabelText('Email'), 'test@example.com')
-    await userEvent.type(screen.getByLabelText('Password'), 'password123')
-    await userEvent.click(screen.getByRole('button', { name: /submit/i }))
+### 8.2 Integration Testing
+```typescript
+// features/auth/tests/auth-flow.test.tsx
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { AuthProvider } from '../providers/auth-provider'
+import { LoginForm } from '../components/login-form'
 
-    expect(onSubmit).toHaveBeenCalledWith({
-      email: 'test@example.com',
-      password: 'password123'
+describe('Auth Flow', () => {
+  it('xử lý luồng đăng nhập', async () => {
+    render(
+      <AuthProvider>
+        <LoginForm />
+      </AuthProvider>
+    )
+
+    // Nhập thông tin đăng nhập
+    fireEvent.change(
+      screen.getByLabelText('Email'),
+      { target: { value: 'test@example.com' }}
+    )
+    
+    fireEvent.change(
+      screen.getByLabelText('Password'),
+      { target: { value: 'password123' }}
+    )
+
+    // Submit form
+    fireEvent.click(screen.getByText('Đăng nhập'))
+
+    // Kiểm tra kết quả
+    await waitFor(() => {
+      expect(screen.getByText('Đăng nhập thành công')).toBeInTheDocument()
     })
   })
 })
+```
 
-// features/auth/hooks/use-auth.test.ts
-describe('useAuth', () => {
-  it('should handle login', async () => {
-    const { result } = renderHook(() => useAuth())
+### 8.3 API Mocking
+```typescript
+// shared/test/mocks/handlers.ts
+import { rest } from 'msw'
 
-    await act(async () => {
-      await result.current.login({
-        email: 'test@example.com',
-        password: 'password123'
+export const handlers = [
+  rest.post('/api/auth/login', (req, res, ctx) => {
+    return res(
+      ctx.json({
+        user: {
+          id: 1,
+          name: 'Test User'
+        },
+        token: 'fake-token'
       })
-    })
+    )
+  }),
 
-    expect(result.current.user).toBeDefined()
-    expect(result.current.isAuthenticated).toBe(true)
+  rest.get('/api/users', (req, res, ctx) => {
+    return res(
+      ctx.json({
+        users: [
+          { id: 1, name: 'User 1' },
+          { id: 2, name: 'User 2' }
+        ],
+        total: 2
+      })
+    )
   })
-})
+]
+
+// shared/test/setup.ts
+import { setupServer } from 'msw/node'
+import { handlers } from './handlers'
+
+export const server = setupServer(...handlers)
+
+beforeAll(() => server.listen())
+afterEach(() => server.resetHandlers())
+afterAll(() => server.close())
 ```
 
-### 6.2 Integration Testing
+## 9. Deployment và Configuration
 
+### 9.1 Environment Variables
 ```typescript
-// features/auth/api/auth-api.test.ts
-describe('Auth API', () => {
-  const server = setupServer(
-    rest.post('/api/login', (req, res, ctx) => {
-      return res(
-        ctx.json({
-          user: { id: '1', email: 'test@example.com' },
-          token: 'fake-token'
-        })
-      )
-    })
-  )
+// src/env.mjs
+import { createEnv } from "@t3-oss/env-nextjs"
+import { z } from "zod"
 
-  beforeAll(() => server.listen())
-  afterEach(() => server.resetHandlers())
-  afterAll(() => server.close())
-
-  it('should handle login flow', async () => {
-    const response = await authApi.login({
-      email: 'test@example.com',
-      password: 'password123'
-    })
-
-    expect(response.user).toBeDefined()
-    expect(response.token).toBeDefined()
-  })
-})
-```
-
-### 6.3 E2E Testing
-
-```typescript
-// e2e/auth/login.spec.ts
-import { test, expect } from '@playwright/test'
-
-test('login flow', async ({ page }) => {
-  await page.goto('/login')
-
-  // Fill login form
-  await page.fill('[name="email"]', 'test@example.com')
-  await page.fill('[name="password"]', 'password123')
-  await page.click('button[type="submit"]')
-
-  // Assert successful login
-  await expect(page).toHaveURL('/dashboard')
-  await expect(page.getByText('Welcome')).toBeVisible()
-})
-```
-
-## 7. Development Workflow
-
-### 7.1 Development Setup
-
-```json
-// package.json
-{
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "type-check": "tsc --noEmit",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "e2e": "playwright test",
-    "prepare": "husky install"
-  }
-}
-
-// .vscode/settings.json
-{
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  }
-}
-```
-
-### 7.2 Build Process
-
-```typescript
-// next.config.js
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true'
-})
-
-module.exports = withBundleAnalyzer({
-  images: {
-    domains: ['assets.example.com']
+export const env = createEnv({
+  server: {
+    DATABASE_URL: z.string().url(),
+    API_KEY: z.string().min(1),
+    NEXTAUTH_URL: z.string().url(),
+    NEXTAUTH_SECRET: z.string().min(1)
   },
-  webpack: (config, { isServer }) => {
-    // Custom webpack config
-    return config
+  client: {
+    NEXT_PUBLIC_API_URL: z.string().url(),
+    NEXT_PUBLIC_WS_URL: z.string().url()
+  },
+  runtimeEnv: {
+    DATABASE_URL: process.env.DATABASE_URL,
+    API_KEY: process.env.API_KEY,
+    NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL
   }
 })
 ```
 
-### 7.3 Deployment Strategy
+### 9.2 Next.js Config
+```typescript
+// next.config.mjs
+import { withAxiom } from 'next-axiom'
 
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  images: {
+    domains: ['assets.example.com'],
+    formats: ['image/avif', 'image/webp']
+  },
+  experimental: {
+    serverActions: true
+  },
+  async headers() {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Credentials', value: 'true' },
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET,DELETE,PATCH,POST,PUT' }
+        ]
+      }
+    ]
+  }
+}
+
+export default withAxiom(nextConfig)
+```
+
+### 9.3 CI/CD Workflow
 ```yaml
-# .github/workflows/deploy.yml
-name: Deploy
+# .github/workflows/main.yml
+name: CI/CD
+
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
-  deploy:
+  validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: 18
+          cache: 'npm'
       
       - name: Install dependencies
         run: npm ci
       
+      - name: Lint
+        run: npm run lint
+      
       - name: Type check
         run: npm run type-check
       
-      - name: Run tests
-        run: npm test
-      
+      - name: Test
+        run: npm run test
+
+  build:
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
       - name: Build
         run: npm run build
       
       - name: Deploy
-        # Deploy steps
+        # Các bước deploy
 ```
 
-## 8. Maintenance and Scaling
+## 10. Best Practices
 
-### 8.1 Code Quality
+1. Code Organization:
+- Tổ chức code theo tính năng
+- Giữ components nhỏ và tái sử dụng
+- Tách biệt logic và UI
+- Sử dụng TypeScript nghiêm ngặt
 
-```typescript
-// .eslintrc.js
-module.exports = {
-  extends: [
-    'next/core-web-vitals',
-    'plugin:@typescript-eslint/recommended'
-  ],
-  rules: {
-    '@typescript-eslint/no-unused-vars': 'error',
-    '@typescript-eslint/explicit-function-return-type': 'warn'
-  }
-}
+2. State Management:
+- Sử dụng React Query cho server state
+- Sử dụng Zustand cho client state
+- Implement optimistic updates
+- Cache và invalidate hợp lý
 
-// prettier.config.js
-module.exports = {
-  semi: false,
-  singleQuote: true,
-  trailingComma: 'es5'
-}
-```
+3. Performance:
+- Lazy loading components
+- Implement virtualization cho danh sách lớn
+- Optimize re-renders với memo
+- Sử dụng proper caching strategies
 
-### 8.2 Documentation
+4. Testing:
+- Unit test cho components
+- Integration test cho flows
+- E2E test cho critical paths
+- Mock API calls trong tests
 
-```markdown
-# features/auth/README.md
-# Auth Feature
-
-## Overview
-Handles user authentication and authorization.
-
-## UI Components
-- login-form: Handles user login
-- register-form: Handles user registration
-
-## API
-- POST /api/auth/login
-- POST /api/auth/register
-
-## State Management
-Uses Zustand for state management.
-
-## Types
-See `types/auth-types.ts` for type definitions.
-```
-
-### 8.3 Performance Monitoring
-
-```typescript
-// shared/lib/monitoring.ts
-export const monitoring = {
-  logError: (error: Error) => {
-    // Send to error tracking service
-    console.error(error)
-  },
-
-  logPerformance: (metric: PerformanceMetric) => {
-    // Send to analytics service
-    console.log(metric)
-  }
-}
-
-// Usage in components
-try {
-  await operation()
-} catch (error) {
-  monitoring.logError(error)
-}
-```
+5. Error Handling:
+- Implement error boundaries
+- Proper API error handling
+- Form validation
+- Logging và monitoring
