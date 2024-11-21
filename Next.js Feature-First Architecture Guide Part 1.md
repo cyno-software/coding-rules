@@ -108,7 +108,7 @@ Phù hợp cho:
 │   │   └── products/
 │   │
 │   ├── shared/               # Shared resources
-│   │   ├── components/
+│   │   ├── ui/              # Common UI components
 │   │   ├── hooks/
 │   │   └── utils/
 │   │
@@ -129,41 +129,41 @@ Phù hợp cho:
 features/                          # Feature modules
 ├── auth/                         # Auth feature
 │   ├── api/                     # API integrations
-│   │   ├── auth.api.ts
+│   │   ├── auth-api.ts
 │   │   └── endpoints.ts
 │   │
-│   ├── components/              # Feature components
-│   │   ├── LoginForm/
-│   │   │   ├── LoginForm.tsx
-│   │   │   ├── LoginForm.test.tsx
-│   │   │   ├── useLoginForm.ts
+│   ├── ui/                     # Feature UI components
+│   │   ├── login-form/
+│   │   │   ├── login-form.tsx
+│   │   │   ├── login-form.test.tsx
+│   │   │   ├── use-login-form.ts
 │   │   │   └── types.ts
-│   │   └── RegisterForm/
+│   │   └── register-form/
 │   │
 │   ├── hooks/                  # Feature hooks
-│   │   ├── useAuth.ts
-│   │   └── useUser.ts
+│   │   ├── use-auth.ts
+│   │   └── use-user.ts
 │   │
-│   ├── stores/                 # State management
-│   │   └── authStore.ts
+│   ├── stores/                # State management
+│   │   └── auth-store.ts
 │   │
-│   ├── types/                  # Feature types
-│   │   ├── index.ts           # Type exports
-│   │   ├── auth.types.ts      # Domain types
-│   │   ├── api.types.ts       # API types
-│   │   ├── store.types.ts     # Store types
-│   │   └── components.types.ts # UI types
+│   ├── types/                 # Feature types
+│   │   ├── index.ts          # Type exports
+│   │   ├── auth-types.ts     # Domain types
+│   │   ├── api-types.ts      # API types
+│   │   ├── store-types.ts    # Store types
+│   │   └── component-types.ts # UI types
 │   │
-│   ├── utils/                 # Feature utilities
+│   ├── utils/                # Feature utilities
 │   │   ├── validation.ts
 │   │   └── format.ts
 │   │
-│   └── constants/             # Feature constants
-│       └── auth.constants.ts
+│   └── constants/            # Feature constants
+│       └── auth-constants.ts
 │
-└── users/                     # Users feature
+└── users/                    # Users feature
     ├── api/
-    ├── components/
+    ├── ui/
     ├── hooks/
     └── types/
 ```
@@ -172,21 +172,21 @@ features/                          # Feature modules
 
 ```typescript
 shared/                           # Shared resources
-├── components/                   # Common components
-│   ├── ui/                      # Base UI components
-│   │   ├── Button/
-│   │   │   ├── Button.tsx
-│   │   │   ├── Button.test.tsx
+├── ui/                          # Common UI components
+│   ├── base/                    # Base UI components
+│   │   ├── button/
+│   │   │   ├── button.tsx
+│   │   │   ├── button.test.tsx
 │   │   │   └── types.ts
-│   │   └── Input/
+│   │   └── input/
 │   │
 │   └── layout/                  # Layout components
-│       ├── Header/
-│       └── Sidebar/
+│       ├── header/
+│       └── sidebar/
 │
 ├── hooks/                       # Common hooks
-│   ├── useForm.ts
-│   └── useFetch.ts
+│   ├── use-form.ts
+│   └── use-fetch.ts
 │
 ├── lib/                        # External libs & config
 │   ├── api.ts                  # Axios config
@@ -210,25 +210,23 @@ types/
 
 // Feature types
 features/auth/types/
-├── auth.types.ts   # Domain types
-├── api.types.ts    # API types
-└── store.types.ts  # Store types
+├── auth-types.ts   # Domain types
+├── api-types.ts    # API types
+└── store-types.ts  # Store types
 ```
 
 ## 3. Implementation Guide
 
 ### 3.1 Feature Implementation
 
-Example auth feature:
-
 ```typescript
-// features/auth/api/auth.api.ts
+// features/auth/api/auth-api.ts
 export const loginApi = async (credentials: LoginCredentials): Promise<User> => {
   const response = await api.post('/auth/login', credentials)
   return response.data
 }
 
-// features/auth/hooks/useAuth.ts
+// features/auth/hooks/use-auth.ts
 export const useAuth = () => {
   const user = useAuthStore(state => state.user)
   const login = useAuthStore(state => state.login)
@@ -244,7 +242,7 @@ export const useAuth = () => {
   return { user, handleLogin }
 }
 
-// features/auth/stores/authStore.ts
+// features/auth/stores/auth-store.ts
 export const useAuthStore = create<AuthStore>((set) => ({
   user: null,
   login: async (credentials) => {
@@ -257,7 +255,7 @@ export const useAuthStore = create<AuthStore>((set) => ({
 ### 3.2 Component Structure
 
 ```typescript
-// shared/hooks/useForm.ts
+// shared/hooks/use-form.ts
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm as useHookForm } from 'react-hook-form'
 import type { ZodSchema } from 'zod'
@@ -298,9 +296,9 @@ export const useForm = <T>({
 }
 
 // Usage in components
-// features/users/components/UserForm/UserForm.tsx
-import { useForm } from '@/shared/hooks/useForm'
-import { userSchema } from '../../schemas/userSchema'
+// features/users/ui/user-form/user-form.tsx
+import { useForm } from '@/shared/hooks/use-form'
+import { userSchema } from '../../schemas/user-schema'
 import type { UserFormData } from './types'
 
 export const UserForm = () => {
@@ -339,7 +337,7 @@ export const UserForm = () => {
 ### 3.3 State Management
 
 ```typescript
-// features/auth/stores/authStore.ts
+// features/auth/stores/auth-store.ts
 interface AuthStore {
   user: User | null
   isLoading: boolean
@@ -387,7 +385,7 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// features/auth/api/auth.api.ts
+// features/auth/api/auth-api.ts
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<User> => {
     const response = await api.post('/auth/login', credentials)
@@ -406,7 +404,7 @@ export const authApi = {
 ```typescript
 // app/(auth)/login/page.tsx
 import { Metadata } from 'next'
-import { LoginForm } from '@/features/auth/components/LoginForm'
+import { LoginForm } from '@/features/auth/ui/login-form'
 
 export const metadata: Metadata = {
   title: 'Login'
@@ -445,8 +443,8 @@ features/
 2. Shared Code:
 ```typescript
 shared/
-├── components/ # Truly shared components
-└── utils/     # Reusable utilities
+├── ui/       # Truly shared components
+└── utils/    # Reusable utilities
 ```
 
 3. Type Organization:
@@ -458,14 +456,17 @@ types/
 
 ### 4.2 Naming Conventions
 
-```typescript
-components/    # Plural for folders (Sử dụng số nhiều cho folder chứa một nhóm nhiều file cùng kiểu)
+Follow kebab-case for all folders and files:
 
-# Với các trường hợp còn lại sẽ đặt tên folder theo `kebab-case`
-Các đặc điểm của kebab-case:
-1. Tất cả các ký tự đều viết thường (lowercase)
-2. Các từ được nối với nhau bằng dấu gạch ngang (-)
-3. Không có khoảng trắng
+```
+ui/                     # Folder containing UI components
+├── user-profile/       # Component folder
+│   ├── user-profile.tsx
+│   ├── user-profile.test.tsx
+│   └── styles.ts
+└── auth-form/
+    ├── auth-form.tsx
+    └── auth-form.test.tsx
 ```
 
 ### 4.3 Type Safety
@@ -499,7 +500,7 @@ function isUser(value: unknown): value is User {
 
 ```typescript
 // Code splitting
-const DynamicComponent = dynamic(() => import('./Heavy'))
+const DynamicComponent = dynamic(() => import('./heavy'))
 
 // Memoization
 const MemoizedComponent = memo(Component)
@@ -508,7 +509,7 @@ const MemoizedComponent = memo(Component)
 export const revalidate = 3600 // revalidate every hour
 
 // Image optimization
-next.config.js
+// next.config.js
 module.exports = {
   images: {
     domains: ['assets.example.com'],
@@ -520,7 +521,7 @@ module.exports = {
 ### 4.5 Error Handling
 
 ```typescript
-// Custom error classes
+// features/shared/errors/api-error.ts
 class ApiError extends Error {
   constructor(
     message: string,
@@ -531,7 +532,7 @@ class ApiError extends Error {
   }
 }
 
-// Error boundary
+// features/shared/ui/error-boundary/error-boundary.tsx
 export class ErrorBoundary extends React.Component {
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log error
@@ -557,12 +558,13 @@ try {
   }
 }
 ```
+
 ## 5. Advanced Patterns
 
 ### 5.1 Domain Events
 
 ```typescript
-// features/users/events/userEvents.ts
+// features/users/events/user-events.ts
 interface UserEvent {
   type: 'USER_CREATED' | 'USER_UPDATED' | 'USER_DELETED'
   payload: User
@@ -591,6 +593,7 @@ eventEmitter.on('USER_CREATED', async (event: UserEvent) => {
 ### 5.2 Advanced State Management
 
 ```typescript
+// features/cart/stores/cart-store.ts
 // Computed selectors
 const selectTotalPrice = (state: CartStore) => {
   return state.items.reduce((sum, item) => {
@@ -610,7 +613,7 @@ interface UISlice {
   toggleCart: () => void
 }
 
-// Combined store
+// Combined store with persistence and devtools
 const useStore = create<CartSlice & UISlice>()(
   devtools(
     persist(
@@ -701,7 +704,7 @@ app/
 ### 5.4 Form Management
 
 ```typescript
-// Advanced form management with Zod and React Hook Form
+// features/users/schemas/user-schema.ts
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -718,7 +721,7 @@ const userSchema = z.object({
 
 type UserFormData = z.infer<typeof userSchema>
 
-// Form hook
+// features/users/hooks/use-user-form.ts
 const useUserForm = () => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
@@ -744,7 +747,7 @@ const useUserForm = () => {
   }
 }
 
-// Form component
+// features/users/ui/user-form/user-form.tsx
 const UserForm = () => {
   const { form, onSubmit } = useUserForm()
   
@@ -779,7 +782,7 @@ const UserForm = () => {
 ### 6.1 Unit Testing
 
 ```typescript
-// Component testing
+// features/auth/ui/login-form/login-form.test.tsx
 describe('LoginForm', () => {
   it('should render all fields', () => {
     render(<LoginForm />)
@@ -803,7 +806,7 @@ describe('LoginForm', () => {
   })
 })
 
-// Hook testing
+// features/auth/hooks/use-auth.test.ts
 describe('useAuth', () => {
   it('should handle login', async () => {
     const { result } = renderHook(() => useAuth())
@@ -824,7 +827,7 @@ describe('useAuth', () => {
 ### 6.2 Integration Testing
 
 ```typescript
-// API integration testing
+// features/auth/api/auth-api.test.ts
 describe('Auth API', () => {
   const server = setupServer(
     rest.post('/api/login', (req, res, ctx) => {
@@ -856,7 +859,7 @@ describe('Auth API', () => {
 ### 6.3 E2E Testing
 
 ```typescript
-// Playwright E2E testing
+// e2e/auth/login.spec.ts
 import { test, expect } from '@playwright/test'
 
 test('login flow', async ({ page }) => {
@@ -982,17 +985,16 @@ module.exports = {
 
 ### 8.2 Documentation
 
-```typescript
-// Feature documentation
-// features/auth/README.md
+```markdown
+# features/auth/README.md
 # Auth Feature
 
 ## Overview
 Handles user authentication and authorization.
 
-## Components
-- LoginForm: Handles user login
-- RegisterForm: Handles user registration
+## UI Components
+- login-form: Handles user login
+- register-form: Handles user registration
 
 ## API
 - POST /api/auth/login
@@ -1002,13 +1004,13 @@ Handles user authentication and authorization.
 Uses Zustand for state management.
 
 ## Types
-See `types/auth.types.ts` for type definitions.
+See `types/auth-types.ts` for type definitions.
 ```
 
 ### 8.3 Performance Monitoring
 
 ```typescript
-// monitoring.ts
+// shared/lib/monitoring.ts
 export const monitoring = {
   logError: (error: Error) => {
     // Send to error tracking service
