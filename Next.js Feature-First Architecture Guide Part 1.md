@@ -1,61 +1,65 @@
 # Hướng Dẫn Kiến Trúc Feature-First Next.js 14
 
 ## Mục Lục
-1. [Cấu Trúc Dự Án](#1-cấu-trúc-dự-án)
-  - [1.1 Cấu Trúc Thư Mục Gốc](#11-cấu-trúc-thư-mục-gốc)
-  - [1.2 Cấu Trúc Feature Module](#12-cấu-trúc-feature-module)
-  - [1.3 Cấu Trúc Shared Resources](#13-cấu-trúc-shared-resources)
+1. [Giới thiệu](#1-giới-thiệu)
+   - [1.1 Feature-First Architecture Là Gì](#11-feature-first-architecture-là-gì)
+   - [1.2 Tại Sao Chọn Feature-First](#12-tại-sao-chọn-feature-first)
+   - [1.3 Khi Nào Nên Sử Dụng](#13-khi-nào-nên-sử-dụng)
 
-2. [Quy Ước Đặt Tên](#2-quy-ước-đặt-tên)
-  - [2.1 Quy Tắc Chung](#21-quy-tắc-chung)
-  - [2.2 Ví Dụ Cụ Thể](#22-ví-dụ-cụ-thể)
+2. [Cấu Trúc Dự Án](#2-cấu-trúc-dự-án)
+   - [2.1 Cấu Trúc Thư Mục Gốc](#21-cấu-trúc-thư-mục-gốc)
+   - [2.2 Cấu Trúc Feature Module](#22-cấu-trúc-feature-module)
+   - [2.3 Cấu Trúc Shared Resources](#23-cấu-trúc-shared-resources)
 
-3. [Tổ Chức Features](#3-tổ-chức-features)
-   - [3.1 Tính Năng Xác Thực](#31-tính-năng-xác-thực)
-   - [3.2 Tổ Chức State Management](#32-tổ-chức-state-management)
-      - [3.2.1 Global State](#321-global-state)
-      - [3.2.2 Feature State](#322-feature-state)
-      - [3.2.3 Server State](#323-server-state)
+3. [Quy Ước Đặt Tên](#3-quy-ước-đặt-tên)
+   - [3.1 Quy Tắc Chung](#31-quy-tắc-chung)
+   - [3.2 Ví Dụ Cụ Thể](#32-ví-dụ-cụ-thể)
 
-4. [Mô Hình Luồng Dữ Liệu](#4-mô-hình-luồng-dữ-liệu)
-  - [4.1 Luồng Xử Lý Dữ Liệu Chuẩn](#41-luồng-xử-lý-dữ-liệu-chuẩn)
-  - [4.2 Xử Lý Mutations](#42-xử-lý-mutations)
+4. [Tổ Chức Features](#4-tổ-chức-features)
+   - [4.1 Tính Năng Xác Thực](#41-tính-năng-xác-thực)
+   - [4.2 Tổ Chức State Management](#42-tổ-chức-state-management)
+     - [4.2.1 Global State](#421-global-state)
+     - [4.2.2 Feature State](#422-feature-state)
+     - [4.2.3 Server State](#423-server-state)
 
-5. [Triển Khai Chi Tiết](#5-triển-khai-chi-tiết)
-  - [5.1 Data Table Với TanStack Table](#51-data-table-với-tanstack-table)
-  - [5.2 Form Handling Với React Hook Form](#52-form-handling-với-react-hook-form)
+5. [Mô Hình Luồng Dữ Liệu](#5-mô-hình-luồng-dữ-liệu)
+   - [5.1 Luồng Xử Lý Dữ Liệu Chuẩn](#51-luồng-xử-lý-dữ-liệu-chuẩn)
+   - [5.2 Xử Lý Mutations](#52-xử-lý-mutations)
 
-6. [Xử Lý Lỗi và Loading States](#6-xử-lý-lỗi-và-loading-states)
-  - [6.1 Error Handling](#61-error-handling)
-  - [6.2 Loading States](#62-loading-states)
+6. [Triển Khai Chi Tiết](#6-triển-khai-chi-tiết)
+   - [6.1 Data Table Với TanStack Table](#61-data-table-với-tanstack-table)
+   - [6.2 Form Handling Với React Hook Form](#62-form-handling-với-react-hook-form)
 
-7. [Tối Ưu Hiệu Suất](#7-tối-ưu-hiệu-suất)
-  - [7.1 React Query Optimization](#71-react-query-optimization)
-  - [7.2 Component Optimization](#72-component-optimization)
-  - [7.3 Code Splitting và Dynamic Imports](#73-code-splitting-và-dynamic-imports)
+7. [Xử Lý Lỗi và Loading States](#7-xử-lý-lỗi-và-loading-states)
+   - [7.1 Error Handling](#71-error-handling)
+   - [7.2 Loading States](#72-loading-states)
 
-8. [Testing Strategy](#8-testing-strategy)
-  - [8.1 Unit Testing Components](#81-unit-testing-components)
-  - [8.2 Integration Testing](#82-integration-testing)
-  - [8.3 API Mocking](#83-api-mocking)
+8. [Tối Ưu Hiệu Suất](#8-tối-ưu-hiệu-suất)
+   - [8.1 React Query Optimization](#81-react-query-optimization)
+   - [8.2 Component Optimization](#82-component-optimization)
+   - [8.3 Code Splitting và Dynamic Imports](#83-code-splitting-và-dynamic-imports)
 
-9. [Deployment và Configuration](#9-deployment-và-configuration)
-  - [9.1 Environment Variables](#91-environment-variables)
-  - [9.2 Next.js Config](#92-nextjs-config)
-  - [9.3 CI/CD Workflow](#93-cicd-workflow)
+9. [Testing Strategy](#9-testing-strategy)
+   - [9.1 Unit Testing Components](#91-unit-testing-components)
+   - [9.2 Integration Testing](#92-integration-testing)
+   - [9.3 API Mocking](#93-api-mocking)
 
-10. [Best Practices](#10-best-practices)
-   - Code Organization
-   - State Management
-   - Performance
-   - Testing
-   - Error Handling
+10. [Deployment và Configuration](#10-deployment-và-configuration)
+    - [10.1 Environment Variables](#101-environment-variables)
+    - [10.2 Next.js Config](#102-nextjs-config)
+    - [10.3 CI/CD Workflow](#103-cicd-workflow)
 
-## 1. Introduction
+11. [Best Practices](#11-best-practices)
+    - [11.1 Code Organization](#111-code-organization)
+    - [11.2 State Management](#112-state-management)
+    - [11.3 Performance](#113-performance)
+    - [11.4 Testing](#114-testing)
+    - [11.5 Error Handling](#115-error-handling)
 
-### 1.1 What is Feature-First Architecture
+## 1. Giới thiệu
 
-Feature-First Architecture là một cách tiếp cận tổ chức code trong đó code được nhóm theo các tính năng nghiệp vụ thay vì các loại kỹ thuật. Mỗi feature là một module độc lập, tự chứa tất cả các thành phần cần thiết.
+### 1.1 Feature-First Architecture Là Gì
+Feature-First Architecture là một phương pháp tổ chức code trong đó code được nhóm theo các tính năng nghiệp vụ thay vì các loại kỹ thuật. Mỗi feature là một module độc lập, tự chứa tất cả các thành phần cần thiết.
 
 ```
 features/
@@ -64,10 +68,9 @@ features/
 └── users/         # User management
 ```
 
-### 1.2 Why Feature-First
+### 1.2 Tại Sao Chọn Feature-First
 
 #### Lợi ích chính:
-
 - **Modularity**: Mỗi feature độc lập và có thể maintain riêng
 - **Scalability**: Dễ dàng thêm/xóa features
 - **Team Organization**: Teams có thể làm việc song song
@@ -79,45 +82,37 @@ features/
 - Onboarding dev mới dễ dàng
 - Giảm conflicts khi làm việc nhóm
 - Có thể reuse code hiệu quả
+
 #### Type Safety:
 - Type definitions nằm gần code
 - Dễ dàng maintain types
 - Auto-completion tốt hơn
 - Catch errors sớm hơn
-### 1.3 When to Use
+
+### 1.3 Khi Nào Nên Sử Dụng
 
 #### Phù hợp cho:
-
 - Large-scale applications
 - Multiple development teams
 - Complex business domains
 - Long-term maintainability
 
-#### Một vài bất lợi
+#### Một số bất lợi
 ##### Complexity:
 - Setup ban đầu phức tạp
 - Nhiều boilerplate code
 - Learning curve cao hơn
 - Cần thống nhất conventions
+
 ##### Overhead:
 - Nhiều files và folders
 - Duplicate code có thể xảy ra
 - Bundle size có thể lớn hơn
 - Build time có thể lâu hơn
-##### Communication:
-- Cần coordination giữa teams
-- Shared resources cần quản lý kỹ
-- Breaking changes ảnh hưởng nhiều
-- Cần documentation tốt
-##### Maintenance:
-- Cập nhật dependencies phức tạp
-- Cross-feature changes khó khăn
-- Technical debt có thể tích tụ
-- Cần review code kỹ hơn
 
-## 1. Cấu Trúc Dự Án
+## 2. Cấu Trúc Dự Án
 
-### 1.1 Cấu Trúc Thư Mục Gốc
+### 2.1 Cấu Trúc Thư Mục Gốc
 ```typescript
 src/
 ├── app/                     # Next.js App Router
@@ -149,7 +144,7 @@ src/
 └── lib/                  # Cấu hình thư viện bên ngoài
 ```
 
-### 1.2 Cấu Trúc Feature Module
+### 2.2 Cấu Trúc Feature Module
 ```typescript
 features/auth/              # Module xác thực
 ├── api/                   # Tích hợp API
@@ -185,7 +180,7 @@ features/auth/              # Module xác thực
     └── api.types.ts
 ```
 
-### 1.3 Cấu Trúc Shared Resources
+### 2.3 Cấu Trúc Shared Resources
 ```typescript
 shared/
 ├── components/
@@ -227,16 +222,16 @@ shared/
         └── formatters.ts
 ```
 
-## 2. Quy Ước Đặt Tên
+## 3. Quy Ước Đặt Tên
 
-### 2.1 Quy Tắc Chung
+### 3.1 Quy Tắc Chung
 - Thư mục: kebab-case
 - Files: kebab-case
 - Components: PascalCase
 - Hooks: camelCase (prefix use)
 - Types/Interfaces: PascalCase
 
-### 2.2 Ví Dụ Cụ Thể:
+### 3.2 Ví Dụ Cụ Thể
 ```typescript
 // Tên thư mục
 features/
@@ -266,9 +261,9 @@ const DEFAULT_PAGE_SIZE = 10
 const API_ENDPOINTS = {}
 ```
 
-## 3. Tổ Chức Features
+## 4. Tổ Chức Features
 
-### 3.1 Tính Năng Xác Thực
+### 4.1 Tính Năng Xác Thực
 ```typescript
 // features/auth/stores/auth-store.ts
 interface AuthState {
@@ -321,9 +316,9 @@ export const useAuth = () => {
 }
 ```
 
-### 3.2 Tổ Chức State Management
+### 4.2 Tổ Chức State Management
 
-#### 3.2.1 Global State
+#### 4.2.1 Global State
 ```typescript
 // store/global/index.ts
 export const useGlobalStore = create<GlobalStore>()((set) => ({
@@ -332,10 +327,73 @@ export const useGlobalStore = create<GlobalStore>()((set) => ({
   setTheme: (theme) => set({ theme }),
   setLanguage: (language) => set({ language })
 }))
+```
 
-## 4. Mô Hình Luồng Dữ Liệu
+#### 4.2.2 Feature State
+```typescript
+// features/users/stores/user-store.ts
+interface UserState {
+  filters: UserFilters
+  sorting: SortingState
+  selection: RowSelectionState
+  pagination: PaginationState
+}
 
-### 4.1 Luồng Xử Lý Dữ Liệu Chuẩn
+export const useUserStore = create<UserState>()((set) => ({
+  filters: initialFilters,
+  sorting: [],
+  selection: {},
+  pagination: {
+    pageIndex: 0,
+    pageSize: 10
+  },
+  
+  setFilters: (filters) => set({ filters }),
+  setSorting: (sorting) => set({ sorting }),
+  setSelection: (selection) => set({ selection }),
+  setPagination: (pagination) => set({ pagination }),
+  
+  reset: () => set({
+    filters: initialFilters,
+    sorting: [],
+    selection: {},
+    pagination: { pageIndex: 0, pageSize: 10 }
+  })
+}))
+```
+
+#### 4.2.3 Server State
+```typescript
+// features/users/api/queries/use-users.ts
+export const useUsers = () => {
+  const filters = useUserStore(state => state.filters)
+  const sorting = useUserStore(state => state.sorting)
+  const pagination = useUserStore(state => state.pagination)
+
+  return useQuery({
+    queryKey: ['users', filters, sorting, pagination],
+    queryFn: () => fetchUsers({ filters, sorting, pagination }),
+    keepPreviousData: true
+  })
+}
+
+// features/users/api/mutations/use-create-user.ts
+export const useCreateUser = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+      toast.success('User created successfully')
+    }
+  })
+}
+```
+
+## 5. Mô Hình Luồng Dữ Liệu
+
+### 5.1 Luồng Xử Lý Dữ Liệu Chuẩn
 ```typescript
 // 1. API Layer (React Query)
 const useUserData = () => {
@@ -395,131 +453,7 @@ const UserTable = () => {
 }
 ```
 
-#### 3.2.2 Feature State
-```typescript
-// features/users/stores/user-store.ts
-interface UserState {
-  filters: UserFilters
-  sorting: SortingState
-  selection: RowSelectionState
-  pagination: PaginationState
-}
-
-export const useUserStore = create<UserState>()((set) => ({
-  filters: initialFilters,
-  sorting: [],
-  selection: {},
-  pagination: {
-    pageIndex: 0,
-    pageSize: 10
-  },
-  
-  setFilters: (filters) => set({ filters }),
-  setSorting: (sorting) => set({ sorting }),
-  setSelection: (selection) => set({ selection }),
-  setPagination: (pagination) => set({ pagination }),
-  
-  reset: () => set({
-    filters: initialFilters,
-    sorting: [],
-    selection: {},
-    pagination: { pageIndex: 0, pageSize: 10 }
-  })
-}))
-```
-
-#### 3.2.3 Server State
-```typescript
-// features/users/api/queries/use-users.ts
-export const useUsers = () => {
-  const filters = useUserStore(state => state.filters)
-  const sorting = useUserStore(state => state.sorting)
-  const pagination = useUserStore(state => state.pagination)
-
-  return useQuery({
-    queryKey: ['users', filters, sorting, pagination],
-    queryFn: () => fetchUsers({ filters, sorting, pagination }),
-    keepPreviousData: true
-  })
-}
-
-// features/users/api/mutations/use-create-user.ts
-export const useCreateUser = () => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: createUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] })
-      toast.success('User created successfully')
-    }
-  })
-}
-```
-
-## 4. Mô Hình Luồng Dữ Liệu
-
-### 4.1 Luồng Xử Lý Dữ Liệu Chuẩn
-```typescript
-// 1. API Layer (React Query)
-const useUserData = () => {
-  return useQuery({
-    queryKey: ['users'],
-    queryFn: () => fetchUsers()
-  })
-}
-
-// 2. Store Layer (Zustand) (Không bắt buộc phải có bước này)
-const useUserStore = create((set) => ({
-  filters: initialFilters,
-  setFilters: (filters) => set({ filters })
-}))
-
-// 3. Business Logic Layer (Custom Hooks)
-const useUserManagement = () => {
-  const { data, isLoading } = useUserData()
-  const { filters, setFilters } = useUserStore()
-  const { mutate: createUser } = useCreateUserMutation()
-
-  const handleCreateUser = async (userData: UserInput) => {
-    try {
-      await createUser(userData)
-    } catch (error) {
-      handleError(error)
-    }
-  }
-
-  return {
-    users: data,
-    isLoading,
-    filters,
-    setFilters,
-    handleCreateUser
-  }
-}
-
-// 4. UI Layer (Components)
-const UserTable = () => {
-  const {
-    users,
-    isLoading,
-    filters,
-    handleCreateUser
-  } = useUserManagement()
-
-  return (
-    <div>
-      <TableFilters filters={filters} />
-      <DataTable 
-        data={users} 
-        loading={isLoading} 
-      />
-    </div>
-  )
-}
-```
-
-### 4.2 Xử Lý Mutations
+### 5.2 Xử Lý Mutations
 ```typescript
 // features/users/api/mutations/use-create-user.ts
 export const useCreateUser = () => {
@@ -543,9 +477,9 @@ export const useCreateUser = () => {
 }
 ```
 
-## 5. Triển Khai Chi Tiết
+## 6. Triển Khai Chi Tiết
 
-### 5.1 Data Table Với TanStack Table
+### 6.1 Data Table Với TanStack Table
 ```typescript
 // features/users/components/user-table/user-table.tsx
 export const UserTable = () => {
@@ -601,7 +535,6 @@ export const UserTable = () => {
 
 // features/users/components/user-table/hooks/use-user-table.ts
 export const useUserTable = () => {
-  // State local
   const [sorting, setSorting] = useState<SortingState>([])
   const [filters, setFilters] = useState<ColumnFiltersState>([])
   const [pagination, setPagination] = useState<PaginationState>({
@@ -609,12 +542,11 @@ export const useUserTable = () => {
     pageSize: 10
   })
 
-  // Data fetching
   const { data, isLoading } = useQuery({
     queryKey: ['users', sorting, filters, pagination],
     queryFn: () => fetchUsers({
       sorting,
-      filters,
+      filters, 
       pagination
     }),
     keepPreviousData: true
@@ -634,7 +566,7 @@ export const useUserTable = () => {
 }
 ```
 
-### 5.2 Form Handling Với React Hook Form
+### 6.2 Form Handling Với React Hook Form
 ```typescript
 // shared/hooks/use-form.ts
 export const useAppForm = <TFormData extends Record<string, any>>({
@@ -670,58 +602,11 @@ export const useAppForm = <TFormData extends Record<string, any>>({
     errors: form.formState.errors
   }
 }
-
-// features/users/components/user-form/user-form.tsx
-export const UserForm = () => {
-  const {
-    form,
-    handleSubmit,
-    isLoading,
-    errors
-  } = useAppForm({
-    schema: userSchema,
-    defaultValues: {
-      name: '',
-      email: '',
-      role: 'USER'
-    },
-    onSubmit: async (data) => {
-      await createUser(data)
-    }
-  })
-
-  return (
-    <Form onSubmit={handleSubmit}>
-      <FormField
-        control={form.control}
-        name="name"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Tên</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      
-      {/* Các field khác */}
-      
-      <Button 
-        type="submit" 
-        loading={isLoading}
-      >
-        Tạo người dùng
-      </Button>
-    </Form>
-  )
-}
 ```
 
-## 6. Xử Lý Lỗi và Loading States
+## 7. Xử Lý Lỗi và Loading States
 
-### 6.1 Error Handling
+### 7.1 Error Handling
 ```typescript
 // shared/utils/error-handling.ts
 export class ApiError extends Error {
@@ -757,7 +642,7 @@ export const handleError = (error: unknown) => {
 }
 ```
 
-### 6.2 Loading States
+### 7.2 Loading States
 ```typescript
 // shared/components/ui/loading/loading-state.tsx
 interface LoadingStateProps {
@@ -781,29 +666,24 @@ export const LoadingState = ({
 </LoadingState>
 ```
 
-## 7. Tối Ưu Hiệu Suất
+## 8. Tối Ưu Hiệu Suất
 
-### 7.1 React Query Optimization
+### 8.1 React Query Optimization
 ```typescript
 // lib/react-query/query-client.ts
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Thời gian cache
       staleTime: 1000 * 60 * 5, // 5 phút
-      // Thời gian giữ data trong cache
       cacheTime: 1000 * 60 * 30, // 30 phút
-      // Không tự động refetch khi focus window
       refetchOnWindowFocus: false,
-      // Số lần retry khi gặp lỗi
       retry: 1,
-      // Sử dụng data cũ khi fetch data mới
       keepPreviousData: true
     }
   }
 })
 
-// Sử dụng prefetching
+// Prefetching
 const prefetchUsers = async () => {
   await queryClient.prefetchQuery({
     queryKey: ['users'],
@@ -811,7 +691,7 @@ const prefetchUsers = async () => {
   })
 }
 
-// Sử dụng infinite queries
+// Infinite Queries
 const useInfiniteUsers = () => {
   return useInfiniteQuery({
     queryKey: ['users'],
@@ -821,12 +701,9 @@ const useInfiniteUsers = () => {
 }
 ```
 
-### 7.2 Component Optimization
+### 8.2 Component Optimization
 ```typescript
-// features/users/components/user-list/user-list.tsx
-import { memo } from 'react'
-
-// Tách component nhỏ và sử dụng memo
+// Memo Component
 const UserRow = memo(({ user }: UserRowProps) => {
   return (
     <tr>
@@ -836,7 +713,7 @@ const UserRow = memo(({ user }: UserRowProps) => {
   )
 })
 
-// Sử dụng virtualization cho danh sách lớn
+// Virtualization
 import { useVirtualizer } from '@tanstack/react-virtual'
 
 export const UserList = ({ users }: UserListProps) => {
@@ -854,7 +731,6 @@ export const UserList = ({ users }: UserListProps) => {
       <div
         style={{
           height: `${rowVirtualizer.getTotalSize()}px`,
-          width: '100%',
           position: 'relative'
         }}
       >
@@ -864,10 +740,6 @@ export const UserList = ({ users }: UserListProps) => {
             user={users[virtualRow.index]}
             style={{
               position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: `${virtualRow.size}px`,
               transform: `translateY(${virtualRow.start}px)`
             }}
           />
@@ -878,16 +750,15 @@ export const UserList = ({ users }: UserListProps) => {
 }
 ```
 
-### 7.3 Code Splitting và Dynamic Imports
+### 8.3 Code Splitting và Dynamic Imports
 ```typescript
-// Lazy loading components
+// Dynamic Component Import
 const UserAnalytics = dynamic(() => import('./user-analytics'), {
   loading: () => <LoadingSpinner />,
   ssr: false
 })
 
-// Route-based code splitting
-// app/(dashboard)/analytics/page.tsx
+// Route-based Code Splitting
 export default async function AnalyticsPage() {
   return (
     <Suspense fallback={<LoadingSpinner />}>
@@ -897,14 +768,11 @@ export default async function AnalyticsPage() {
 }
 ```
 
-## 8. Testing Strategy
+## 9. Testing Strategy
 
-### 8.1 Unit Testing Components
+### 9.1 Unit Testing Components
 ```typescript
 // features/users/components/user-table/user-table.test.tsx
-import { render, screen, fireEvent } from '@testing-library/react'
-import { UserTable } from './user-table'
-
 describe('UserTable', () => {
   const mockUsers = [
     { id: 1, name: 'User 1', email: 'user1@example.com' },
@@ -913,7 +781,6 @@ describe('UserTable', () => {
 
   it('hiển thị danh sách người dùng', () => {
     render(<UserTable users={mockUsers} />)
-    
     expect(screen.getByText('User 1')).toBeInTheDocument()
     expect(screen.getByText('User 2')).toBeInTheDocument()
   })
@@ -933,13 +800,8 @@ describe('UserTable', () => {
 })
 ```
 
-### 8.2 Integration Testing
+### 9.2 Integration Testing
 ```typescript
-// features/auth/tests/auth-flow.test.tsx
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { AuthProvider } from '../providers/auth-provider'
-import { LoginForm } from '../components/login-form'
-
 describe('Auth Flow', () => {
   it('xử lý luồng đăng nhập', async () => {
     render(
@@ -948,7 +810,6 @@ describe('Auth Flow', () => {
       </AuthProvider>
     )
 
-    // Nhập thông tin đăng nhập
     fireEvent.change(
       screen.getByLabelText('Email'),
       { target: { value: 'test@example.com' }}
@@ -959,10 +820,8 @@ describe('Auth Flow', () => {
       { target: { value: 'password123' }}
     )
 
-    // Submit form
     fireEvent.click(screen.getByText('Đăng nhập'))
 
-    // Kiểm tra kết quả
     await waitFor(() => {
       expect(screen.getByText('Đăng nhập thành công')).toBeInTheDocument()
     })
@@ -970,11 +829,9 @@ describe('Auth Flow', () => {
 })
 ```
 
-### 8.3 API Mocking
+### 9.3 API Mocking
 ```typescript
 // shared/test/mocks/handlers.ts
-import { rest } from 'msw'
-
 export const handlers = [
   rest.post('/api/auth/login', (req, res, ctx) => {
     return res(
@@ -1001,10 +858,7 @@ export const handlers = [
   })
 ]
 
-// shared/test/setup.ts
-import { setupServer } from 'msw/node'
-import { handlers } from './handlers'
-
+// Test Setup
 export const server = setupServer(...handlers)
 
 beforeAll(() => server.listen())
@@ -1012,14 +866,11 @@ afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 ```
 
-## 9. Deployment và Configuration
+## 10. Deployment và Configuration
 
-### 9.1 Environment Variables
+### 10.1 Environment Variables
 ```typescript
 // src/env.mjs
-import { createEnv } from "@t3-oss/env-nextjs"
-import { z } from "zod"
-
 export const env = createEnv({
   server: {
     DATABASE_URL: z.string().url(),
@@ -1042,7 +893,7 @@ export const env = createEnv({
 })
 ```
 
-### 9.2 Next.js Config
+### 10.2 Next.js Config
 ```typescript
 // next.config.mjs
 import { withAxiom } from 'next-axiom'
@@ -1074,7 +925,7 @@ const nextConfig = {
 export default withAxiom(nextConfig)
 ```
 
-### 9.3 CI/CD Workflow
+### 10.3 CI/CD Workflow
 ```yaml
 # .github/workflows/main.yml
 name: CI/CD
@@ -1115,37 +966,55 @@ jobs:
         run: npm run build
       
       - name: Deploy
-        # Các bước deploy
+        # Các bước deploy tùy theo platform
 ```
 
-## 10. Best Practices
+## 11. Best Practices
 
-1. Code Organization:
-- Tổ chức code theo tính năng
-- Giữ components nhỏ và tái sử dụng
-- Tách biệt logic và UI
-- Sử dụng TypeScript nghiêm ngặt
+### 11.1 Code Organization
+- **Modular Structure**: Tổ chức code theo tính năng
+- **Separation of Concerns**: Tách biệt UI, logic, và data layers
+- **Consistent Naming**: Tuân thủ quy ước đặt tên
+- **Type Safety**: Sử dụng TypeScript nghiêm ngặt
+- **Clean Code**: Giữ components và functions nhỏ gọn, dễ hiểu
 
-2. State Management:
-- Sử dụng React Query cho server state
-- Sử dụng Zustand cho client state
-- Implement optimistic updates
-- Cache và invalidate hợp lý
+### 11.2 State Management
+- **Server State**: Sử dụng React Query cho server state
+- **Client State**: Zustand cho global và feature state
+- **Form State**: React Hook Form cho form management
+- **Local State**: useState cho UI state đơn giản
+- **Optimistic Updates**: Implement cho UX tốt hơn
 
-3. Performance:
-- Lazy loading components
-- Implement virtualization cho danh sách lớn
-- Optimize re-renders với memo
-- Sử dụng proper caching strategies
+### 11.3 Performance
+- **Code Splitting**: Lazy load components và routes
+- **Caching**: Cấu hình React Query caching hợp lý
+- **Memoization**: Sử dụng memo, useMemo, useCallback đúng cách
+- **Bundle Size**: Optimizing imports và dependencies
+- **Image Optimization**: Sử dụng Next.js Image component
 
-4. Testing:
-- Unit test cho components
-- Integration test cho flows
-- E2E test cho critical paths
-- Mock API calls trong tests
+### 11.4 Testing
+- **Unit Tests**: Test individual components và functions
+- **Integration Tests**: Test feature flows
+- **E2E Tests**: Test critical user journeys
+- **Test Coverage**: Maintain good coverage
+- **Testing Best Practices**: Follow testing pyramid
 
-5. Error Handling:
-- Implement error boundaries
-- Proper API error handling
-- Form validation
-- Logging và monitoring
+### 11.5 Error Handling
+- **Error Boundaries**: Catch và xử lý React errors
+- **API Errors**: Proper handling và display
+- **Form Validation**: Client và server validation
+- **User Feedback**: Clear error messages
+- **Error Logging**: Track và monitor errors
+
+Đây là một kiến trúc toàn diện cho các ứng dụng Next.js quy mô lớn. Nó cung cấp:
+- Cấu trúc rõ ràng và có thể mở rộng
+- Tái sử dụng code hiệu quả
+- Hiệu suất tốt
+- Developer experience tốt
+- Maintainability dài hạn
+
+Tuy nhiên, cần lưu ý:
+- Không phải mọi dự án đều cần structure phức tạp này
+- Có thể điều chỉnh cho phù hợp với nhu cầu cụ thể
+- Cần cân nhắc trade-offs giữa complexity và flexibility
+- Documentation tốt là rất quan trọng
