@@ -51,6 +51,70 @@
    - Testing
    - Error Handling
 
+## 1. Introduction
+
+### 1.1 What is Feature-First Architecture
+
+Feature-First Architecture là một cách tiếp cận tổ chức code trong đó code được nhóm theo các tính năng nghiệp vụ thay vì các loại kỹ thuật. Mỗi feature là một module độc lập, tự chứa tất cả các thành phần cần thiết.
+
+```
+features/
+├── auth/          # Authentication feature
+├── products/      # Product management
+└── users/         # User management
+```
+
+### 1.2 Why Feature-First
+
+#### Lợi ích chính:
+
+- **Modularity**: Mỗi feature độc lập và có thể maintain riêng
+- **Scalability**: Dễ dàng thêm/xóa features
+- **Team Organization**: Teams có thể làm việc song song
+- **Code Locality**: Related code ở gần nhau
+- **Better Testing**: Dễ dàng test từng feature
+
+#### Developer Experience:
+- Structure rõ ràng, dễ hiểu
+- Onboarding dev mới dễ dàng
+- Giảm conflicts khi làm việc nhóm
+- Có thể reuse code hiệu quả
+#### Type Safety:
+- Type definitions nằm gần code
+- Dễ dàng maintain types
+- Auto-completion tốt hơn
+- Catch errors sớm hơn
+### 1.3 When to Use
+
+#### Phù hợp cho:
+
+- Large-scale applications
+- Multiple development teams
+- Complex business domains
+- Long-term maintainability
+
+#### Một vài bất lợi
+##### Complexity:
+- Setup ban đầu phức tạp
+- Nhiều boilerplate code
+- Learning curve cao hơn
+- Cần thống nhất conventions
+##### Overhead:
+- Nhiều files và folders
+- Duplicate code có thể xảy ra
+- Bundle size có thể lớn hơn
+- Build time có thể lâu hơn
+##### Communication:
+- Cần coordination giữa teams
+- Shared resources cần quản lý kỹ
+- Breaking changes ảnh hưởng nhiều
+- Cần documentation tốt
+##### Maintenance:
+- Cập nhật dependencies phức tạp
+- Cross-feature changes khó khăn
+- Technical debt có thể tích tụ
+- Cần review code kỹ hơn
+
 ## 1. Cấu Trúc Dự Án
 
 ### 1.1 Cấu Trúc Thư Mục Gốc
