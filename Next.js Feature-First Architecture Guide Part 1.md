@@ -108,7 +108,7 @@ Phù hợp cho:
 │   │   └── products/
 │   │
 │   ├── shared/               # Shared resources
-│   │   ├── ui/              # Common UI components
+│   │   ├── components/              # Common UI components
 │   │   ├── hooks/
 │   │   └── utils/
 │   │
@@ -132,7 +132,7 @@ features/                          # Feature modules
 │   │   ├── auth-api.ts
 │   │   └── endpoints.ts
 │   │
-│   ├── ui/                     # Feature UI components
+│   ├── components/                     # Feature UI components
 │   │   ├── login-form/
 │   │   │   ├── login-form.tsx
 │   │   │   ├── login-form.test.tsx
@@ -163,7 +163,7 @@ features/                          # Feature modules
 │
 └── users/                    # Users feature
     ├── api/
-    ├── ui/
+    ├── components/
     ├── hooks/
     └── types/
 ```
@@ -172,19 +172,25 @@ features/                          # Feature modules
 
 ```typescript
 shared/                           # Shared resources
-├── ui/                          # Common UI components
-│   ├── base/                    # Base UI components
-│   │   ├── button/
-│   │   │   ├── button.tsx
-│   │   │   ├── button.test.tsx
-│   │   │   └── types.ts
-│   │   └── input/
-│   │
-│   └── layout/                  # Layout components
-│       ├── header/
-│       └── sidebar/
+├── components/                   # UI components
+│   └── ui/                      # Shadcn components
+│       ├── button.tsx
+│       ├── form.tsx
+│       ├── input.tsx
+│       └── label.tsx
 │
-├── hooks/                       # Common hooks
+├── layouts/                     # Layout components
+│   ├── header/
+│   │   ├── header.tsx
+│   │   └── types.ts
+│   ├── sidebar/
+│   │   ├── sidebar.tsx
+│   │   └── types.ts
+│   └── footer/
+│       ├── footer.tsx
+│       └── types.ts
+│
+├── hooks/                       # Common hooks  
 │   ├── use-form.ts
 │   └── use-fetch.ts
 │
@@ -296,7 +302,7 @@ export const useForm = <T>({
 }
 
 // Usage in components
-// features/users/ui/user-form/user-form.tsx
+// features/users/components/user-form/user-form.tsx
 import { useForm } from '@/shared/hooks/use-form'
 import { userSchema } from '../../schemas/user-schema'
 import type { UserFormData } from './types'
@@ -404,7 +410,7 @@ export const authApi = {
 ```typescript
 // app/(auth)/login/page.tsx
 import { Metadata } from 'next'
-import { LoginForm } from '@/features/auth/ui/login-form'
+import { LoginForm } from '@/features/auth/components/login-form'
 
 export const metadata: Metadata = {
   title: 'Login'
@@ -443,7 +449,7 @@ features/
 2. Shared Code:
 ```typescript
 shared/
-├── ui/       # Truly shared components
+├── components/       # Truly shared components
 └── utils/    # Reusable utilities
 ```
 
@@ -459,7 +465,7 @@ types/
 Follow kebab-case for all folders and files:
 
 ```
-ui/                     # Folder containing UI components
+components/                     # Folder containing UI components
 ├── user-profile/       # Component folder
 │   ├── user-profile.tsx
 │   ├── user-profile.test.tsx
@@ -532,7 +538,7 @@ class ApiError extends Error {
   }
 }
 
-// features/shared/ui/error-boundary/error-boundary.tsx
+// features/shared/components/error-boundary/error-boundary.tsx
 export class ErrorBoundary extends React.Component {
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log error
@@ -747,7 +753,7 @@ const useUserForm = () => {
   }
 }
 
-// features/users/ui/user-form/user-form.tsx
+// features/users/components/user-form/user-form.tsx
 const UserForm = () => {
   const { form, onSubmit } = useUserForm()
   
@@ -782,7 +788,7 @@ const UserForm = () => {
 ### 6.1 Unit Testing
 
 ```typescript
-// features/auth/ui/login-form/login-form.test.tsx
+// features/auth/components/login-form/login-form.test.tsx
 describe('LoginForm', () => {
   it('should render all fields', () => {
     render(<LoginForm />)
