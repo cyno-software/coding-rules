@@ -84,46 +84,120 @@ Phù hợp cho:
 ### 2.1 Root Directory Structure
 
 ```typescript
-app/
-├── (routes)/      # App routes
-├── api/          # API routes
-├── features/     # Feature modules
-├── shared/      # Shared resources
-└── types/       # Global types
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── (auth)/            # Auth routes group
+│   │   │   ├── login/
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── loading.tsx
+│   │   │   └── register/
+│   │   │       └── page.tsx
+│   │   │
+│   │   ├── (dashboard)/       # Dashboard routes
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.tsx
+│   │   │   └── loading.tsx
+│   │   │
+│   │   └── api/               # API routes
+│   │       ├── auth/
+│   │       └── [...]/
+│   │
+│   ├── features/              # Feature modules
+│   │   ├── auth/
+│   │   ├── users/
+│   │   └── products/
+│   │
+│   ├── shared/               # Shared resources
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   └── utils/
+│   │
+│   └── types/               # Global types
+│
+├── public/                  # Static files
+│
+├── tailwind.config.js      # Tailwind configuration
+├── next.config.js          # Next.js configuration
+├── tsconfig.json           # TypeScript configuration
+├── package.json
+└── README.md
 ```
 
 ### 2.2 Feature Module Structure
 
 ```typescript
-features/auth/
-├── api/              # API integration
-│   ├── auth.api.ts
-│   └── endpoints.ts
-├── components/       # UI Components
-│   ├── LoginForm/
-│   └── RegisterForm/
-├── hooks/           # Custom hooks
-│   └── useAuth.ts
-├── stores/         # State management
-│   └── authStore.ts
-├── types/          # Type definitions
-│   ├── auth.types.ts
-│   └── api.types.ts
-└── utils/          # Utilities
-    └── validation.ts
+features/                          # Feature modules
+├── auth/                         # Auth feature
+│   ├── api/                     # API integrations
+│   │   ├── auth.api.ts
+│   │   └── endpoints.ts
+│   │
+│   ├── components/              # Feature components
+│   │   ├── LoginForm/
+│   │   │   ├── LoginForm.tsx
+│   │   │   ├── LoginForm.test.tsx
+│   │   │   ├── useLoginForm.ts
+│   │   │   └── types.ts
+│   │   └── RegisterForm/
+│   │
+│   ├── hooks/                  # Feature hooks
+│   │   ├── useAuth.ts
+│   │   └── useUser.ts
+│   │
+│   ├── stores/                 # State management
+│   │   └── authStore.ts
+│   │
+│   ├── types/                  # Feature types
+│   │   ├── index.ts           # Type exports
+│   │   ├── auth.types.ts      # Domain types
+│   │   ├── api.types.ts       # API types
+│   │   ├── store.types.ts     # Store types
+│   │   └── components.types.ts # UI types
+│   │
+│   ├── utils/                 # Feature utilities
+│   │   ├── validation.ts
+│   │   └── format.ts
+│   │
+│   └── constants/             # Feature constants
+│       └── auth.constants.ts
+│
+└── users/                     # Users feature
+    ├── api/
+    ├── components/
+    ├── hooks/
+    └── types/
 ```
 
 ### 2.3 Shared Resources Structure
 
 ```typescript
-shared/
-├── components/       # Common components
-│   ├── ui/          # Base UI components
-│   └── layout/      # Layout components
-├── hooks/           # Common hooks
-├── lib/            # External libraries
-├── styles/         # Global styles
-└── utils/          # Common utilities
+shared/                           # Shared resources
+├── components/                   # Common components
+│   ├── ui/                      # Base UI components
+│   │   ├── Button/
+│   │   │   ├── Button.tsx
+│   │   │   ├── Button.test.tsx
+│   │   │   └── types.ts
+│   │   └── Input/
+│   │
+│   └── layout/                  # Layout components
+│       ├── Header/
+│       └── Sidebar/
+│
+├── hooks/                       # Common hooks
+│   ├── useForm.ts
+│   └── useFetch.ts
+│
+├── lib/                        # External libs & config
+│   ├── api.ts                  # Axios config
+│   └── db.ts                   # DB config
+│
+├── styles/                     # Global styles
+│   └── globals.css
+│
+└── utils/                      # Common utilities
+    ├── format.ts
+    └── validation.ts
 ```
 
 ### 2.4 Type Definitions
@@ -183,33 +257,82 @@ export const useAuthStore = create<AuthStore>((set) => ({
 ### 3.2 Component Structure
 
 ```typescript
-// features/auth/components/LoginForm/LoginForm.tsx
-export const LoginForm: FC<LoginFormProps> = () => {
-  const { handleSubmit, isLoading } = useLoginForm()
+// shared/hooks/useForm.ts
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm as useHookForm } from 'react-hook-form'
+import type { ZodSchema } from 'zod'
+
+interface UseFormProps<T> {
+  schema: ZodSchema
+  defaultValues?: Partial<T>
+  onSubmit: (data: T) => Promise<void>
+}
+
+export const useForm = <T>({
+  schema,
+  defaultValues,
+  onSubmit
+}: UseFormProps<T>) => {
+  const form = useHookForm<T>({
+    resolver: zodResolver(schema),
+    defaultValues
+  })
+
+  const handleSubmit = form.handleSubmit(async (data) => {
+    try {
+      await onSubmit(data)
+      form.reset()
+    } catch (error) {
+      form.setError('root', {
+        message: error.message
+      })
+    }
+  })
+
+  return {
+    form,
+    handleSubmit,
+    isLoading: form.formState.isSubmitting,
+    errors: form.formState.errors
+  }
+}
+
+// Usage in components
+// features/users/components/UserForm/UserForm.tsx
+import { useForm } from '@/shared/hooks/useForm'
+import { userSchema } from '../../schemas/userSchema'
+import type { UserFormData } from './types'
+
+export const UserForm = () => {
+  const {
+    form,
+    handleSubmit,
+    isLoading,
+    errors
+  } = useForm<UserFormData>({
+    schema: userSchema,
+    onSubmit: async (data) => {
+      await createUser(data)
+    }
+  })
 
   return (
     <form onSubmit={handleSubmit}>
-      <Input name="email" />
-      <Input name="password" type="password" />
-      <Button loading={isLoading}>Login</Button>
+      <Input
+        {...form.register('name')}
+        label="Name"
+        error={errors.name?.message}
+      />
+      <Input
+        {...form.register('email')}
+        label="Email"
+        error={errors.email?.message}
+      />
+      <Button loading={isLoading}>
+        Submit
+      </Button>
     </form>
   )
-}
-
-// features/auth/components/LoginForm/useLoginForm.ts
-export const useLoginForm = () => {
-  const form = useForm<LoginFormData>()
-  const login = useAuth(state => state.login)
-
-  const handleSubmit = async (data: LoginFormData) => {
-    try {
-      await login(data)
-    } catch (error) {
-      form.setError('root', { message: error.message })
-    }
-  }
-
-  return { handleSubmit }
 }
 ```
 
@@ -336,21 +459,13 @@ types/
 ### 4.2 Naming Conventions
 
 ```typescript
-// Components (PascalCase)
-LoginForm.tsx
-UserProfile.tsx
+components/    # Plural for folders (Sử dụng số nhiều cho folder chứa một nhóm nhiều file cùng kiểu)
 
-// Hooks (camelCase with use prefix)
-useAuth.ts
-useForm.ts
-
-// Utilities (camelCase)
-validation.ts
-formatting.ts
-
-// Types (PascalCase with type suffix)
-UserType.ts
-AuthResponseType.ts
+# Với các trường hợp còn lại sẽ đặt tên folder theo `kebab-case`
+Các đặc điểm của kebab-case:
+1. Tất cả các ký tự đều viết thường (lowercase)
+2. Các từ được nối với nhau bằng dấu gạch ngang (-)
+3. Không có khoảng trắng
 ```
 
 ### 4.3 Type Safety
