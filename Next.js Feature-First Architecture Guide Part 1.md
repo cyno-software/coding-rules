@@ -64,8 +64,8 @@ Feature-First Architecture là một phương pháp tổ chức code trong đó 
 ```
 features/
 ├── auth/          # Authentication feature
-├── products/      # Product management
-└── users/         # User management
+├── product/      # Product management
+└── user/         # User management
 ```
 
 ### 1.2 Tại Sao Chọn Feature-First
@@ -132,8 +132,8 @@ src/
 │
 ├── features/               # Các module tính năng
 │   ├── auth/
-│   ├── users/
-│   └── products/
+│   ├── user/
+│   └── product/
 │
 ├── shared/                # Tài nguyên dùng chung
 │   ├── components/
