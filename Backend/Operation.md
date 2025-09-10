@@ -31,4 +31,4 @@ Sử dụng thư viện: class-validator (https://github.com/typestack/class-val
 
 <!-- TOC --><a name="golang"></a>
 ### GO
-Sử dụng thư viện: github.com/go-playground/validator/v10
+Sử dụng thư viện: github.com/go-playground/validator/v10 (https://github.com/go-playground/validator/v10)
